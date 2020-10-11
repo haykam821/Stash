@@ -31,8 +31,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class StashCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -98,6 +101,14 @@ public class StashCommand {
 		LiteralArgumentBuilder<ServerCommandSource> retrieveBuilder = CommandManager.literal("retrieve");
 		retrieveBuilder
 			.then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
+			.suggests((context, suggestionsBuilder) -> {
+				StashComponent stash = Main.STASH.get(context.getSource().getPlayer());
+				for (Object2IntMap.Entry<Item> entry : stash.getEntries()) {
+					Identifier id = Registry.ITEM.getId(entry.getKey());
+					suggestionsBuilder.suggest(id.toString());
+				}
+				return suggestionsBuilder.buildFuture();
+			})
 			.executes(context -> {
 				return StashCommand.retrieve(context, Integer.MAX_VALUE);
 			})

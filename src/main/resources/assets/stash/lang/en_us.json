@@ -1,0 +1,11 @@
+{
+	"arguments.stash.stash_filter.invalid": "Invalid stash filter: %s",
+	"arguments.stash.stash_filter.malformed": "Malformed stash filter: %s",
+	"commands.stash.stash.list.entry": "- %s: %d",
+	"commands.stash.stash.list.header": "Stash contains %d items (%d types):",
+	"commands.stash.stash.list.header.partial": "Section of stash contains %d items (%d types):",
+	"commands.stash.stash.query": "Stash contains %d of %s",
+	"commands.stash.stash.retrieve": "Retrieved %d of %s from stash",
+	"commands.stash.stash.store.success.multiple": "Stashed %d stacks containing %d items",
+	"commands.stash.stash.store.success.single": "Stashed %d %s"
+}

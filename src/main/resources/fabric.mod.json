@@ -1,0 +1,26 @@
+{
+	"schemaVersion": 1,
+	"id": "stash",
+	"version": "${version}",
+	"name": "Stash",
+	"description": "Allows storing and retrieving items from a command-based storage area.",
+	"authors": [
+		"haykam821"
+	],
+	"contact": {
+		"homepage": "https://github.com/haykam821/Stash#readme",
+		"issues": "https://github.com/haykam821/Stash/issues"
+	},
+	"entrypoints": {
+		"main": [
+			"io.github.haykam821.stash.Main"
+		]
+	},
+	"license": "MIT",
+	"icon": "assets/stash/icon.png",
+	"depends": {
+		"fabricloader": ">=0.4.0",
+		"fabric-command-api-v1": "*",
+		"fabric-resource-loader-v0": "*"
+	}
+}

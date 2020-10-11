@@ -184,11 +184,11 @@ public class StashCommand {
 		PlayerEntity player = context.getSource().getPlayer();
 		StashComponent stash = Main.STASH.get(player);
 
-		int remainingCount = Math.min(maxCount, stash.getCount(item));
+		int totalRetrievableCount = Math.min(maxCount, stash.getCount(item));
+		int remainingCount = totalRetrievableCount;
 
 		// Initial pass for non-completely filled stacks of the same type
 		for (int slot = 0; slot < 36; slot++) {
-			System.out.println("pass 1: " + remainingCount);
 			if (remainingCount == 0) {
 				break;
 			}
@@ -204,7 +204,6 @@ public class StashCommand {
 
 		// Second pass to create new stacks
 		for (int slot = 0; slot < 36; slot++) {
-			System.out.println("pass 2: " + remainingCount);
 			if (remainingCount == 0) {
 				break;
 			}
@@ -217,12 +216,11 @@ public class StashCommand {
 			}
 		}
 
-		System.out.println("Before remainder: " + stash.getCount(item));
-		stash.decreaseCount(item, maxCount - remainingCount);
-		System.out.println("After remainder: " + stash.getCount(item));
+		int retrievedCount = totalRetrievableCount - remainingCount;
+		stash.decreaseCount(item, retrievedCount);
 
 		Text stackText = itemArgument.createStack(1, false).toHoverableText();
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.retrieve", maxCount - remainingCount, stackText), false);
+		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.retrieve", retrievedCount, stackText), false);
 
 		return 1;
 	}

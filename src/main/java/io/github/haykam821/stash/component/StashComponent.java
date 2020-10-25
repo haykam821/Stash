@@ -2,10 +2,9 @@ package io.github.haykam821.stash.component;
 
 import java.util.Optional;
 
+import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import nerdhub.cardinal.components.api.util.sync.EntitySyncedComponent;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,20 +12,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class StashComponent implements EntitySyncedComponent {
+public class StashComponent implements AutoSyncedComponent {
 	private static final int MAX_COUNT = 64 * 1000;
 
-	private final PlayerEntity player;
 	private final Object2IntOpenHashMap<Item> stash = new Object2IntOpenHashMap<>();
 
 	public StashComponent(PlayerEntity player) {
-		this.player = player;
 		this.stash.defaultReturnValue(0);
-	}
-
-	@Override
-	public Entity getEntity() {
-		return this.player;
 	}
 
 	public int getCount(Item item) {
@@ -52,7 +44,7 @@ public class StashComponent implements EntitySyncedComponent {
 	}
 
 	@Override
-	public void fromTag(CompoundTag tag) {
+	public void readFromNbt(CompoundTag tag) {
 		CompoundTag stashTag = tag.getCompound("Stash");
 		for (String key : stashTag.getKeys()) {
 			int count = stashTag.getInt(key);
@@ -65,7 +57,7 @@ public class StashComponent implements EntitySyncedComponent {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public void writeToNbt(CompoundTag tag) {
 		CompoundTag stashTag = new CompoundTag();
 		for (Object2IntMap.Entry<Item> entry : this.stash.object2IntEntrySet()) {
 			Identifier id = Registry.ITEM.getId(entry.getKey());
@@ -73,7 +65,6 @@ public class StashComponent implements EntitySyncedComponent {
 		}
 
 		tag.put("Stash", stashTag);
-		return tag;
 	}
 
 	public static boolean isInsertable(ItemStack stack) {

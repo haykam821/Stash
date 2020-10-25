@@ -14,6 +14,14 @@
 	"entrypoints": {
 		"main": [
 			"io.github.haykam821.stash.Main"
+		],
+        "cardinal-components-entity": [
+            "io.github.haykam821.stash.component.StashComponentInitializer"
+        ]
+	},
+	"custom": {
+		"cardinal-components": [
+			"stash:stash"
 		]
 	},
 	"license": "MIT",
@@ -21,6 +29,7 @@
 	"depends": {
 		"fabricloader": ">=0.4.0",
 		"fabric-command-api-v1": "*",
-		"fabric-resource-loader-v0": "*"
+		"fabric-resource-loader-v0": "*",
+		"cardinal-components-entity": ">=2.5.0"
 	}
 }

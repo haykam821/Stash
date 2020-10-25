@@ -12,9 +12,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import io.github.haykam821.stash.Main;
 import io.github.haykam821.stash.command.argument.StashFilterArgumentType;
 import io.github.haykam821.stash.component.StashComponent;
+import io.github.haykam821.stash.component.StashComponentInitializer;
 import io.github.haykam821.stash.filter.AlwaysStashFilter;
 import io.github.haykam821.stash.filter.HandStashFilter;
 import io.github.haykam821.stash.filter.PredicateStashFilter;
@@ -31,7 +31,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -69,7 +68,7 @@ public class StashCommand {
 
 		listBuilder.then(CommandManager.literal("random")
 			.executes(context -> {
-				StashComponent stash = Main.STASH.get(context.getSource().getPlayer());
+				StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 
 				List<Object2IntMap.Entry<Item>> entries = new ArrayList<>(stash.getEntries());
 				Collections.shuffle(entries);
@@ -78,7 +77,7 @@ public class StashCommand {
 			})
 				.then(CommandManager.argument("maxItems", IntegerArgumentType.integer(1))
 				.executes(context -> {
-					StashComponent stash = Main.STASH.get(context.getSource().getPlayer());
+					StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 
 					List<Object2IntMap.Entry<Item>> entries = new ArrayList<>(stash.getEntries());
 					Collections.shuffle(entries);
@@ -102,7 +101,7 @@ public class StashCommand {
 		retrieveBuilder
 			.then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
 			.suggests((context, suggestionsBuilder) -> {
-				StashComponent stash = Main.STASH.get(context.getSource().getPlayer());
+				StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 				for (Object2IntMap.Entry<Item> entry : stash.getEntries()) {
 					Identifier id = Registry.ITEM.getId(entry.getKey());
 					suggestionsBuilder.suggest(id.toString());
@@ -156,7 +155,7 @@ public class StashCommand {
 	}
 
 	private static int list(CommandContext<ServerCommandSource> context, Comparator<Object2IntMap.Entry<Item>> comparator, int maxItems) throws CommandSyntaxException {
-		StashComponent stash = Main.STASH.get(context.getSource().getPlayer());
+		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 
 		List<Object2IntMap.Entry<Item>> entries = stash.getEntries().stream().sorted(comparator).limit(maxItems).collect(Collectors.toList());
 		return StashCommand.list(context, entries, maxItems);
@@ -181,7 +180,7 @@ public class StashCommand {
 	}
 
 	private static int query(CommandContext<ServerCommandSource> context, ItemStack stack) throws CommandSyntaxException {
-		StashComponent stash = Main.STASH.get(context.getSource().getPlayer());
+		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 		int count = stash.getCount(stack.getItem());
 
 		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.query", count, stack.toHoverableText()), false);
@@ -193,7 +192,7 @@ public class StashCommand {
 		Item item = itemArgument.getItem();
 
 		PlayerEntity player = context.getSource().getPlayer();
-		StashComponent stash = Main.STASH.get(player);
+		StashComponent stash = StashComponentInitializer.STASH.get(player);
 
 		int totalRetrievableCount = Math.min(maxCount, stash.getCount(item));
 		int remainingCount = totalRetrievableCount;
@@ -238,7 +237,7 @@ public class StashCommand {
 
 	private static int store(CommandContext<ServerCommandSource> context, StashFilter stashFilter) throws CommandSyntaxException {
 		PlayerEntity player = context.getSource().getPlayer();
-		StashComponent stash = Main.STASH.get(player);
+		StashComponent stash = StashComponentInitializer.STASH.get(player);
 	
 		List<ItemStack> matchedStacks = new ArrayList<>();
 		int matchedCount = 0;

@@ -14,6 +14,6 @@ public class StashComponentInitializer implements EntityComponentInitializer {
 
 	@Override
 	public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-		registry.registerForPlayers(STASH, StashComponent::new, RespawnCopyStrategy.LOSSLESS_ONLY);
+		registry.registerForPlayers(STASH, StashComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
 	}
 }

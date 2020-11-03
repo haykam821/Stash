@@ -6,6 +6,7 @@
 	"commands.stash.stash.list.header.partial": "Section of stash contains %d items (%d types):",
 	"commands.stash.stash.query": "Stash contains %d of %s",
 	"commands.stash.stash.retrieve": "Retrieved %d of %s from stash",
+	"commands.stash.stash.set": "Set the amount of %s in stash to %d",
 	"commands.stash.stash.store.success.multiple": "Stashed %d stacks containing %d items",
 	"commands.stash.stash.store.success.single": "Stashed %d %s"
 }

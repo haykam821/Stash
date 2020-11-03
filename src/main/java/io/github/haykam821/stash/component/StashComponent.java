@@ -25,6 +25,10 @@ public class StashComponent implements AutoSyncedComponent {
 		return this.stash.getInt(item);
 	}
 
+	public int setCount(Item item, int count) {
+		return this.stash.put(item, count);
+	}
+
 	public int decreaseCount(Item item, int count) {
 		return this.stash.addTo(item, -count);
 	}

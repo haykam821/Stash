@@ -116,6 +116,15 @@ public class StashCommand {
 					return StashCommand.retrieve(context, IntegerArgumentType.getInteger(context, "maxCount"));
 				})));
 		builder.then(retrieveBuilder);
+				
+		// Set
+		LiteralArgumentBuilder<ServerCommandSource> setBuilder = CommandManager.literal("set");
+		setBuilder.requires(source -> {
+			return source.hasPermissionLevel(4);
+		}).then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
+			.then(CommandManager.argument("count", IntegerArgumentType.integer(0))
+			.executes(StashCommand::set)));
+		builder.then(setBuilder);
 
 		// Store
 		LiteralArgumentBuilder<ServerCommandSource> storeBuilder = CommandManager.literal("store");
@@ -232,6 +241,17 @@ public class StashCommand {
 		Text stackText = itemArgument.createStack(1, false).toHoverableText();
 		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.retrieve", retrievedCount, stackText), false);
 
+		return 1;
+	}
+
+	private static int set(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		ItemStackArgument itemArgument = ItemStackArgumentType.getItemStackArgument(context, "item");
+		int count = IntegerArgumentType.getInteger(context, "count");
+
+		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
+		stash.setCount(itemArgument.getItem(), count);
+
+		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.set", itemArgument.createStack(count, false).toHoverableText(), count), false);
 		return 1;
 	}
 

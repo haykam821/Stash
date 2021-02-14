@@ -21,16 +21,28 @@ public class StashComponent implements AutoSyncedComponent {
 		this.stash.defaultReturnValue(0);
 	}
 
+	private boolean shouldKeep(int count) {
+		return count > 0;
+	}
+
 	public int getCount(Item item) {
 		return this.stash.getInt(item);
 	}
 
 	public int setCount(Item item, int count) {
+		if (!this.shouldKeep(count)) {
+			return this.stash.removeInt(item);
+		}
 		return this.stash.put(item, count);
 	}
 
 	public int decreaseCount(Item item, int count) {
-		return this.stash.addTo(item, -count);
+		int oldCount = this.stash.addTo(item, -count);
+		if (!this.shouldKeep(oldCount - count)) {
+			this.stash.removeInt(item);
+		}
+
+		return oldCount;
 	}
 
 	public Object2IntMap.FastEntrySet<Item> getEntries() {
@@ -43,7 +55,7 @@ public class StashComponent implements AutoSyncedComponent {
 		int newCount = this.getCount(stack.getItem()) + stack.getCount();
 		if (newCount >= MAX_COUNT) return false;
 
-		this.stash.put(stack.getItem(), newCount);
+		this.setCount(stack.getItem(), newCount);
 		return true;
 	}
 
@@ -52,6 +64,7 @@ public class StashComponent implements AutoSyncedComponent {
 		CompoundTag stashTag = tag.getCompound("Stash");
 		for (String key : stashTag.getKeys()) {
 			int count = stashTag.getInt(key);
+			if (this.shouldKeep(count)) continue;
 
 			Optional<Item> itemMaybe = Registry.ITEM.getOrEmpty(Identifier.tryParse(key));
 			if (itemMaybe.isPresent()) {

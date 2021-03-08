@@ -29,8 +29,10 @@ import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -116,6 +118,13 @@ public class StashCommand {
 					return StashCommand.retrieve(context, IntegerArgumentType.getInteger(context, "maxCount"));
 				})));
 		builder.then(retrieveBuilder);
+
+		// Export
+		LiteralArgumentBuilder<ServerCommandSource> exportBuilder = CommandManager.literal("export");
+		exportBuilder.executes(StashCommand::export)
+			.then(CommandManager.literal("output")
+			.executes(StashCommand::exportOutput));
+		builder.then(exportBuilder);
 				
 		// Set
 		LiteralArgumentBuilder<ServerCommandSource> setBuilder = CommandManager.literal("set");
@@ -241,6 +250,30 @@ public class StashCommand {
 		Text stackText = itemArgument.createStack(1, false).toHoverableText();
 		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.retrieve", retrievedCount, stackText), false);
 
+		return 1;
+	}
+
+	private static int export(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
+
+		CompoundTag tag = new CompoundTag();
+		stash.writeToNbt(tag);
+
+		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, tag.asString());
+		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.export").styled(style -> {
+			return style.withClickEvent(clickEvent);
+		}), false);
+
+		return 1;
+	}
+
+	private static int exportOutput(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
+
+		CompoundTag tag = new CompoundTag();
+		stash.writeToNbt(tag);
+
+		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.export.output", tag.toText()), false);
 		return 1;
 	}
 

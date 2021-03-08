@@ -1,6 +1,8 @@
 {
 	"arguments.stash.stash_filter.invalid": "Invalid stash filter: %s",
 	"arguments.stash.stash_filter.malformed": "Malformed stash filter: %s",
+	"commands.stash.stash.export": "Click to copy the exported stash to the clipboard",
+	"commands.stash.stash.export.output": "The exported stash has the following data: %s",
 	"commands.stash.stash.list.entry": "- %s: %d",
 	"commands.stash.stash.list.header": "Stash contains %d items (%d types):",
 	"commands.stash.stash.list.header.partial": "Section of stash contains %d items (%d types):",

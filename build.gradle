@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.7-SNAPSHOT"
+	id "fabric-loom" version "0.11.30"
 	id "maven-publish"
 }
 
@@ -17,7 +17,7 @@ repositories {
 	}
 	maven {
 		name = "Ladysnake Libs"
-		url = "https://dl.bintray.com/ladysnake/libs"
+		url = "https://ladysnake.jfrog.io/artifactory/mods"
 	}
 	jcenter()
 }
@@ -34,12 +34,12 @@ dependencies {
 	modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version))
 
 	// Cardinal Components (Base)
-	modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components_version}")
-	include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cardinal_components_version}")
+	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
+	include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
 
 	// Cardinal Components (Entity)
-	modImplementation("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}")
-	include("io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cardinal_components_version}")
+	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
+	include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
 }
 
 processResources {

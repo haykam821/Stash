@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -60,10 +60,10 @@ public class StashComponent implements AutoSyncedComponent {
 	}
 
 	@Override
-	public void readFromNbt(CompoundTag tag) {
-		CompoundTag stashTag = tag.getCompound("Stash");
-		for (String key : stashTag.getKeys()) {
-			int count = stashTag.getInt(key);
+	public void readFromNbt(NbtCompound nbt) {
+		NbtCompound stashNbt = nbt.getCompound("Stash");
+		for (String key : stashNbt.getKeys()) {
+			int count = stashNbt.getInt(key);
 			if (this.shouldKeep(count)) continue;
 
 			Optional<Item> itemMaybe = Registry.ITEM.getOrEmpty(Identifier.tryParse(key));
@@ -74,14 +74,14 @@ public class StashComponent implements AutoSyncedComponent {
 	}
 
 	@Override
-	public void writeToNbt(CompoundTag tag) {
-		CompoundTag stashTag = new CompoundTag();
+	public void writeToNbt(NbtCompound nbt) {
+		NbtCompound stashNbt = new NbtCompound();
 		for (Object2IntMap.Entry<Item> entry : this.stash.object2IntEntrySet()) {
 			Identifier id = Registry.ITEM.getId(entry.getKey());
-			stashTag.putInt(id.toString(), entry.getIntValue());
+			stashNbt.putInt(id.toString(), entry.getIntValue());
 		}
 
-		tag.put("Stash", stashTag);
+		nbt.put("Stash", stashNbt);
 	}
 
 	public static boolean isInsertable(ItemStack stack) {

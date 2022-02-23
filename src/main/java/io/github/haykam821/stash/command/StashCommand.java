@@ -27,9 +27,11 @@ import net.minecraft.command.argument.ItemSlotArgumentType;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
@@ -221,7 +223,7 @@ public class StashCommand {
 				break;
 			}
 
-			ItemStack stack = player.inventory.getStack(slot);
+			ItemStack stack = player.getInventory().getStack(slot);
 			if (item == stack.getItem() && StashComponent.isInsertable(stack)) {
 				int difference = Math.min(remainingCount, item.getMaxCount() - stack.getCount());
 
@@ -236,10 +238,10 @@ public class StashCommand {
 				break;
 			}
 			
-			ItemStack stack = player.inventory.getStack(slot);
+			ItemStack stack = player.getInventory().getStack(slot);
 			if (stack.isEmpty()) {
 				int count = Math.min(remainingCount, item.getMaxCount());
-				player.inventory.setStack(slot, new ItemStack(item, count));
+				player.getInventory().setStack(slot, new ItemStack(item, count));
 				remainingCount -= count;
 			}
 		}
@@ -256,10 +258,10 @@ public class StashCommand {
 	private static int export(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 
-		CompoundTag tag = new CompoundTag();
-		stash.writeToNbt(tag);
+		NbtCompound nbt = new NbtCompound();
+		stash.writeToNbt(nbt);
 
-		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, tag.asString());
+		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, nbt.asString());
 		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.export").styled(style -> {
 			return style.withClickEvent(clickEvent);
 		}), false);
@@ -270,10 +272,10 @@ public class StashCommand {
 	private static int exportOutput(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 
-		CompoundTag tag = new CompoundTag();
-		stash.writeToNbt(tag);
+		NbtCompound nbt = new NbtCompound();
+		stash.writeToNbt(nbt);
 
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.export.output", tag.toText()), false);
+		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.export.output", NbtHelper.toPrettyPrintedText(nbt)), false);
 		return 1;
 	}
 
@@ -290,18 +292,19 @@ public class StashCommand {
 
 	private static int store(CommandContext<ServerCommandSource> context, StashFilter stashFilter) throws CommandSyntaxException {
 		PlayerEntity player = context.getSource().getPlayer();
+		Inventory inventory = player.getInventory();
 		StashComponent stash = StashComponentInitializer.STASH.get(player);
 	
 		List<ItemStack> matchedStacks = new ArrayList<>();
 		int matchedCount = 0;
-		for (int slot = 0; slot < player.inventory.size(); slot++) {
-			ItemStack stack = player.inventory.getStack(slot);
+		for (int slot = 0; slot < inventory.size(); slot++) {
+			ItemStack stack = inventory.getStack(slot);
 			if (StashComponent.isInsertable(stack) && stashFilter.matches(matchedStacks, stack, player, slot)) {
 				matchedStacks.add(stack.copy());
 				matchedCount += stack.getCount();
 
 				stash.insertStack(stack);
-				player.inventory.removeStack(slot);
+				inventory.removeStack(slot);
 			}
 		}
 

@@ -14,7 +14,7 @@ public class HandStashFilter implements StashFilter {
 
 	@Override
 	public boolean matches(Collection<ItemStack> matchedStacks, ItemStack stack, PlayerEntity player, int slot) {
-		return slot == player.inventory.selectedSlot;
+		return slot == player.getInventory().selectedSlot;
 	}
 
 	@Override

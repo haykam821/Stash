@@ -38,7 +38,7 @@ public class StashFilterArgumentType implements ArgumentType<String> {
 	public static StashFilter getStashFilter(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
 		String string = StringArgumentType.getString(context, name);
 		try {
-			JsonElement element = new JsonParser().parse(string);
+			JsonElement element = JsonParser.parseString(string);
 			if (!element.isJsonObject()) {
 				throw INVALID_EXCEPTION.create(string);
 			}

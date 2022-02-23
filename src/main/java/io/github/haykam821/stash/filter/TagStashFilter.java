@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tag.ServerTagManagerHolder;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class TagStashFilter implements StashFilter {
 	public static final Codec<TagStashFilter> CODEC = RecordCodecBuilder.create(instance -> {
@@ -31,7 +32,7 @@ public class TagStashFilter implements StashFilter {
 
 	@Override
 	public boolean matches(Collection<ItemStack> matchedStacks, ItemStack stack, PlayerEntity player, int slot) {
-		Tag<Item> tag = ServerTagManagerHolder.getTagManager().getItems().getTag(this.tag);
+		Tag<Item> tag = ServerTagManagerHolder.getTagManager().getOrCreateTagGroup(Registry.ITEM_KEY).getTag(this.tag);
 		if (tag == null) return false;
 
 		return tag.contains(stack.getItem());

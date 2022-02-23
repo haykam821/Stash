@@ -4,6 +4,7 @@ import com.mojang.serialization.Lifecycle;
 
 import io.github.haykam821.stash.command.StashCommand;
 import io.github.haykam821.stash.command.argument.StashFilterArgumentType;
+import io.github.haykam821.stash.compatibility.StashCompatibility;
 import io.github.haykam821.stash.filter.StashFilterType;
 import io.github.haykam821.stash.filter.StashFilterTypes;
 import net.fabricmc.api.ModInitializer;
@@ -39,5 +40,7 @@ public class Main implements ModInitializer {
 		});
 
 		StashFilterTypes.register();
+
+		StashCompatibility.register();
 	}
 }

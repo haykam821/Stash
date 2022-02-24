@@ -59,6 +59,13 @@ public class StashComponent implements AutoSyncedComponent {
 		return true;
 	}
 
+	public ItemStack extractStack(Item item, int maxCount) {
+		int count = Math.min(this.getCount(item), maxCount);
+
+		this.decreaseCount(item, count);
+		return new ItemStack(item, count);
+	}
+
 	@Override
 	public void readFromNbt(NbtCompound nbt) {
 		NbtCompound stashNbt = nbt.getCompound("Stash");

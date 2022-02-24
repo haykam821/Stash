@@ -47,6 +47,10 @@ dependencies {
 
 	// Placeholder API
 	modImplementation("eu.pb4:placeholder-api:${project.placeholder_api_version}")
+
+	// SGUI
+	modImplementation("eu.pb4:sgui:${project.sgui_version}")
+	include("eu.pb4:sgui:${project.sgui_version}")
 }
 
 processResources {

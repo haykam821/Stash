@@ -21,6 +21,7 @@ import io.github.haykam821.stash.filter.PredicateStashFilter;
 import io.github.haykam821.stash.filter.SlotIndexStashFilter;
 import io.github.haykam821.stash.filter.SlotRange;
 import io.github.haykam821.stash.filter.StashFilter;
+import io.github.haykam821.stash.ui.StashUi;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemSlotArgumentType;
@@ -170,6 +171,11 @@ public class StashCommand {
 
 		storeBuilder.then(slotsBuilder);
 		builder.then(storeBuilder);
+
+		// Show
+		LiteralArgumentBuilder<ServerCommandSource> showBuilder = CommandManager.literal("show");
+		showBuilder.executes(StashCommand::show);
+		builder.then(showBuilder);
 		
 		dispatcher.register(builder);
 	}
@@ -313,6 +319,13 @@ public class StashCommand {
 		} else {
 			context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.store.success.multiple", matchedStacks.size(), matchedCount), false);
 		}
+		return 1;
+	}
+
+	private static int show(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		StashUi ui = new StashUi(context.getSource().getPlayer());
+		ui.open();
+
 		return 1;
 	}
 }

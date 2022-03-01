@@ -51,6 +51,10 @@ dependencies {
 	// SGUI
 	modImplementation("eu.pb4:sgui:${project.sgui_version}")
 	include("eu.pb4:sgui:${project.sgui_version}")
+
+	// Server Translations API
+	modImplementation("fr.catcore:server-translations-api:${project.server_translations_api_version}")
+	include("fr.catcore:server-translations-api:${project.server_translations_api_version}")
 }
 
 processResources {

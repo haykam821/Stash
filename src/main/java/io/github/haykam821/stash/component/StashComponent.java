@@ -68,10 +68,12 @@ public class StashComponent implements AutoSyncedComponent {
 
 	@Override
 	public void readFromNbt(NbtCompound nbt) {
+		this.stash.clear();
+
 		NbtCompound stashNbt = nbt.getCompound("Stash");
 		for (String key : stashNbt.getKeys()) {
 			int count = stashNbt.getInt(key);
-			if (this.shouldKeep(count)) continue;
+			if (!this.shouldKeep(count)) continue;
 
 			Optional<Item> itemMaybe = Registry.ITEM.getOrEmpty(Identifier.tryParse(key));
 			if (itemMaybe.isPresent()) {

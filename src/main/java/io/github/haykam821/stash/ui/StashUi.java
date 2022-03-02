@@ -1,6 +1,7 @@
 package io.github.haykam821.stash.ui;
 
 import eu.pb4.sgui.api.gui.layered.LayeredGui;
+import io.github.haykam821.stash.command.StashEntrySort;
 import io.github.haykam821.stash.component.StashComponent;
 import io.github.haykam821.stash.component.StashComponentInitializer;
 import io.github.haykam821.stash.ui.element.InfoElement;
@@ -19,6 +20,7 @@ public class StashUi extends LayeredGui {
 	private final StashContentsLayer contentsLayer;
 	private final StashToolbarLayer toolbarLayer;
 
+	private StashEntrySort sort = StashEntrySort.ALPHABETICAL;
 	private int page = 0;
 
 	public StashUi(ServerPlayerEntity player) {
@@ -49,6 +51,15 @@ public class StashUi extends LayeredGui {
 
 	public boolean isStashEmpty() {
 		return this.stash.getEntries().isEmpty();
+	}
+
+	public StashEntrySort getSort() {
+		return this.sort;
+	}
+
+	public void cycleSort(int offset) {
+		this.sort = this.sort.cycle(offset);
+		this.update();
 	}
 
 	public int getPage() {

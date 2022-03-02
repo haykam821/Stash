@@ -1,6 +1,5 @@
 package io.github.haykam821.stash.ui.layer;
 
-import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import eu.pb4.sgui.api.elements.GuiElement;
@@ -15,13 +14,8 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 
 public class StashContentsLayer extends AbstractStashLayer {
-	private static final Comparator<Object2IntMap.Entry<Item>> COMPARATOR = Comparator.comparing(entry -> {
-		return Registry.ITEM.getId(entry.getKey()).getPath();
-	});
-
 	public StashContentsLayer(StashUi ui, int width, int height) {
 		super(ui, width, height);
 	}
@@ -48,7 +42,7 @@ public class StashContentsLayer extends AbstractStashLayer {
 
 	private Iterable<Object2IntMap.Entry<Item>> getPageEntries() {
 		return this.getStash().getEntries().stream()
-			.sorted(COMPARATOR)
+			.sorted(this.ui.getSort().getComparator())
 			.skip(this.getSize() * this.ui.getPage())
 			.collect(Collectors.toList());
 	}

@@ -11,6 +11,10 @@
 	"commands.stash.stash.set": "Set the amount of %s in stash to %d",
 	"commands.stash.stash.store.success.multiple": "Stashed %d stacks containing %d items",
 	"commands.stash.stash.store.success.single": "Stashed %d %s",
+	"text.stash.sort.alphabetical": "Alphabetical",
+	"text.stash.sort.count": "Count",
+	"text.stash.sort.rawId": "Raw ID",
+	"text.stash.sort.unsorted": "Unsorted",
 	"text.stash.ui.empty": "Empty Stash",
 	"text.stash.ui.empty.description": "This stash contains no items",
 	"text.stash.ui.title": "%s's Stash",
@@ -21,5 +25,8 @@
 	"text.stash.ui.toolbar.page.next.help.1": "Right-click to move forward one page",
 	"text.stash.ui.toolbar.page.next.help.2": "Shift-click to jump to the last page",
 	"text.stash.ui.toolbar.page.previous.help.1": "Right-click to move backward one page",
-	"text.stash.ui.toolbar.page.previous.help.2": "Shift-click to jump to the first page"
+	"text.stash.ui.toolbar.page.previous.help.2": "Shift-click to jump to the first page",
+	"text.stash.ui.toolbar.sort": "Sort",
+	"text.stash.ui.toolbar.sort.current": "Current: %s",
+	"text.stash.ui.toolbar.sort.help.1": "Click to change the sort"
 }

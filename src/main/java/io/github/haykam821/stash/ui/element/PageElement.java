@@ -49,7 +49,7 @@ public final class PageElement {
 		};
 	}
 
-	private static void playClickSound(StashUi ui) {
+	protected static void playClickSound(StashUi ui) {
 		ui.getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1, 1);
 	}
 }

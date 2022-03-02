@@ -6,6 +6,7 @@ import io.github.haykam821.stash.ui.element.BackgroundElement;
 import io.github.haykam821.stash.ui.element.InfoElement;
 import io.github.haykam821.stash.ui.element.InserterElement;
 import io.github.haykam821.stash.ui.element.PageElement;
+import io.github.haykam821.stash.ui.element.SortElement;
 
 public class StashToolbarLayer extends AbstractStashLayer {
 	private final GuiElement previousPageElement;
@@ -29,6 +30,8 @@ public class StashToolbarLayer extends AbstractStashLayer {
 				this.setSlot(slot, this.previousPageElement);
 			} else if (slot == 3) {
 				this.setSlot(slot, InfoElement.of(ui));
+			} else if (slot == 4) {
+				this.setSlot(slot, SortElement.of(ui));
 			} else if (slot == 5) {
 				this.setSlot(slot, this.inserterElement);
 			} else if (slot == 7) {

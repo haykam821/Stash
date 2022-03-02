@@ -34,7 +34,7 @@ public final class InfoElement {
 		return getLoreLine(translationKey + ".help." + ordinal, args);
 	}
 
-	protected static MutableText getLoreLine(String translationKey, Object... args) {
+	public static MutableText getLoreLine(String translationKey, Object... args) {
 		return new TranslatableText(translationKey, args).formatted(Formatting.GRAY);
 	}
 }

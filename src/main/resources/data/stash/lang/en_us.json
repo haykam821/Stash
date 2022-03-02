@@ -17,6 +17,8 @@
 	"text.stash.sort.unsorted": "Unsorted",
 	"text.stash.ui.empty": "Empty Stash",
 	"text.stash.ui.empty.description": "This stash contains no items",
+	"text.stash.ui.entry.count": "%d items",
+	"text.stash.ui.entry.stacks": "%d stacks + %d extra",
 	"text.stash.ui.title": "%s's Stash",
 	"text.stash.ui.toolbar.info": "Stash Information",
 	"text.stash.ui.toolbar.info.page": "Page %d",

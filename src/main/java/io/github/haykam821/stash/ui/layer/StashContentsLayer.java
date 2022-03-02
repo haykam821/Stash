@@ -7,6 +7,7 @@ import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.elements.GuiElementInterface.ClickCallback;
 import io.github.haykam821.stash.ui.StashUi;
 import io.github.haykam821.stash.ui.element.EmptyElement;
+import io.github.haykam821.stash.ui.element.InfoElement;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,6 +57,17 @@ public class StashContentsLayer extends AbstractStashLayer {
 		GuiElementBuilder builder = new GuiElementBuilder(item)
 			.setCount(MathHelper.clamp(count, 0, maxCount))
 			.setCallback(createCallback(entry.getKey()));
+
+		if (count > maxCount) {
+			builder.addLoreLine(InfoElement.getLoreLine("text.stash.ui.entry.count", count));
+
+			if (maxCount > 1) {
+				int stacks = count / maxCount;
+				int remainder = count % maxCount;
+
+				builder.addLoreLine(InfoElement.getLoreLine("text.stash.ui.entry.stacks", stacks, remainder));
+			}
+		}
 
 		if (count > maxCount) {
 			builder.glow();

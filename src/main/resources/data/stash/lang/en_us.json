@@ -14,6 +14,7 @@
 	"text.stash.sort.alphabetical": "Alphabetical",
 	"text.stash.sort.count": "Count",
 	"text.stash.sort.rawId": "Raw ID",
+	"text.stash.sort.stacks": "Stacks",
 	"text.stash.sort.unsorted": "Unsorted",
 	"text.stash.ui.empty": "Empty Stash",
 	"text.stash.ui.empty.description": "This stash contains no items",

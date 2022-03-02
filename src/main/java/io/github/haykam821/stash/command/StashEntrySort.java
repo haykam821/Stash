@@ -23,7 +23,10 @@ public enum StashEntrySort implements StringIdentifiable {
 	}),
 	COUNT("count", (a, b) -> {
 		return Integer.compare(a.getIntValue(), b.getIntValue());
-	});
+	}),
+	STACKS("stacks", Comparator.comparingDouble(entry -> {
+		return entry.getIntValue() / (double) entry.getKey().getMaxCount();
+	}));
 
 	private static final StashEntrySort[] VALUES = StashEntrySort.values();
 

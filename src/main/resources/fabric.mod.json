@@ -32,6 +32,7 @@
 		"fabric-resource-loader-v0": "*",
 		"cardinal-components-entity": ">=3.0.0",
 		"sgui": "*",
-		"server_translations_api": "*"
+		"server_translations_api": "*",
+		"fabric-permissions-api-v0": "*"
 	}
 }

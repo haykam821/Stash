@@ -23,6 +23,7 @@ import io.github.haykam821.stash.filter.SlotRange;
 import io.github.haykam821.stash.filter.StashFilter;
 import io.github.haykam821.stash.ui.StashUi;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemSlotArgumentType;
 import net.minecraft.command.argument.ItemStackArgument;
@@ -46,7 +47,7 @@ public class StashCommand {
 		LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal("stash");
 				
 		// List
-		LiteralArgumentBuilder<ServerCommandSource> listBuilder = CommandManager.literal("list");
+		LiteralArgumentBuilder<ServerCommandSource> listBuilder = StashCommand.baseLiteral("list");
 		LiteralArgumentBuilder<ServerCommandSource> reversedBuilder = CommandManager.literal("reversed");
 
 		for (StashEntrySort stashEntrySort : StashEntrySort.values()) {
@@ -95,14 +96,14 @@ public class StashCommand {
 		builder.then(listBuilder);
 				
 		// Query
-		LiteralArgumentBuilder<ServerCommandSource> queryBuilder = CommandManager.literal("query");
+		LiteralArgumentBuilder<ServerCommandSource> queryBuilder = StashCommand.baseLiteral("query");
 		queryBuilder.then(CommandManager.argument("item", ItemStackArgumentType.itemStack()).executes(context -> {
 			return StashCommand.query(context, ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
 		}));
 		builder.then(queryBuilder);
 				
 		// Retrieve
-		LiteralArgumentBuilder<ServerCommandSource> retrieveBuilder = CommandManager.literal("retrieve");
+		LiteralArgumentBuilder<ServerCommandSource> retrieveBuilder = StashCommand.baseLiteral("retrieve");
 		retrieveBuilder
 			.then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
 			.suggests((context, suggestionsBuilder) -> {
@@ -123,23 +124,21 @@ public class StashCommand {
 		builder.then(retrieveBuilder);
 
 		// Export
-		LiteralArgumentBuilder<ServerCommandSource> exportBuilder = CommandManager.literal("export");
+		LiteralArgumentBuilder<ServerCommandSource> exportBuilder = StashCommand.baseLiteral("export");
 		exportBuilder.executes(StashCommand::export)
 			.then(CommandManager.literal("output")
 			.executes(StashCommand::exportOutput));
 		builder.then(exportBuilder);
 				
 		// Set
-		LiteralArgumentBuilder<ServerCommandSource> setBuilder = CommandManager.literal("set");
-		setBuilder.requires(source -> {
-			return source.hasPermissionLevel(4);
-		}).then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
+		LiteralArgumentBuilder<ServerCommandSource> setBuilder = StashCommand.baseLiteral("set", 4);
+		setBuilder.then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
 			.then(CommandManager.argument("count", IntegerArgumentType.integer(0))
 			.executes(StashCommand::set)));
 		builder.then(setBuilder);
 
 		// Store
-		LiteralArgumentBuilder<ServerCommandSource> storeBuilder = CommandManager.literal("store");
+		LiteralArgumentBuilder<ServerCommandSource> storeBuilder = StashCommand.baseLiteral("store");
 
 		storeBuilder.then(CommandManager.argument("stashFilter", StashFilterArgumentType.stashFilter()).executes(context -> {
 			return StashCommand.store(context, StashFilterArgumentType.getStashFilter(context, "stashFilter"));
@@ -173,7 +172,7 @@ public class StashCommand {
 		builder.then(storeBuilder);
 
 		// Show
-		LiteralArgumentBuilder<ServerCommandSource> showBuilder = CommandManager.literal("show");
+		LiteralArgumentBuilder<ServerCommandSource> showBuilder = StashCommand.baseLiteral("show");
 		showBuilder.executes(StashCommand::show);
 		builder.then(showBuilder);
 		
@@ -327,5 +326,19 @@ public class StashCommand {
 		ui.open();
 
 		return 1;
+	}
+
+	private static LiteralArgumentBuilder<ServerCommandSource> baseLiteral(String literal) {
+		String key = StashCommand.getPermissionKey(literal);
+		return CommandManager.literal(literal).requires(Permissions.require(key, true));
+	}
+
+	private static LiteralArgumentBuilder<ServerCommandSource> baseLiteral(String literal, int defaultRequiredLevel) {
+		String key = StashCommand.getPermissionKey(literal);
+		return CommandManager.literal(literal).requires(Permissions.require(key, defaultRequiredLevel));
+	}
+
+	private static String getPermissionKey(String literal) {
+		return "stash.command." + literal;
 	}
 }

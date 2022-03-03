@@ -27,7 +27,7 @@ public class Main implements ModInitializer {
 	// Stash filter types
 	private static final Identifier STASH_FILTER_TYPE_ID = new Identifier(MOD_ID, "stash_filter_type");
 	private static final RegistryKey<Registry<StashFilterType<?>>> STASH_FILTER_TYPE_KEY = RegistryKey.ofRegistry(STASH_FILTER_TYPE_ID);
-	public static final Registry<StashFilterType<?>> STASH_FILTER_TYPE_REGISTRY = new SimpleRegistry<>(STASH_FILTER_TYPE_KEY, Lifecycle.stable());
+	public static final Registry<StashFilterType<?>> STASH_FILTER_TYPE_REGISTRY = new SimpleRegistry<>(STASH_FILTER_TYPE_KEY, Lifecycle.stable(), null);
 
 	@Override
 	public void onInitialize() {

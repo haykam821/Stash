@@ -8,34 +8,29 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.ServerTagManagerHolder;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.registry.Registry;
 
 public class TagStashFilter implements StashFilter {
 	public static final Codec<TagStashFilter> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
-			Identifier.CODEC.fieldOf("tag").forGetter(TagStashFilter::getTag)
+			TagKey.identifierCodec(Registry.ITEM_KEY).fieldOf("tag").forGetter(TagStashFilter::getTag)
 		).apply(instance, TagStashFilter::new);
 	});
 
-	private final Identifier tag;
+	private final TagKey<Item> tag;
 
-	public TagStashFilter(Identifier tag) {
+	public TagStashFilter(TagKey<Item> tag) {
 		this.tag = tag;
 	}
 
-	public Identifier getTag() {
+	public TagKey<Item> getTag() {
 		return this.tag;
 	}
 
 	@Override
 	public boolean matches(Collection<ItemStack> matchedStacks, ItemStack stack, PlayerEntity player, int slot) {
-		Tag<Item> tag = ServerTagManagerHolder.getTagManager().getOrCreateTagGroup(Registry.ITEM_KEY).getTag(this.tag);
-		if (tag == null) return false;
-
-		return tag.contains(stack.getItem());
+		return stack.isIn(tag);
 	}
 
 	@Override

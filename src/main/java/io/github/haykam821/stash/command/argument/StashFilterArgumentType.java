@@ -19,16 +19,16 @@ import com.mojang.serialization.JsonOps;
 
 import io.github.haykam821.stash.filter.StashFilter;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 public class StashFilterArgumentType implements ArgumentType<String> {
 	private static final Collection<String> EXAMPLES = Arrays.asList("{\"type\": \"stash:tag\", \"tag\": \"minecraft:leaves\"}");
 
 	public static final DynamicCommandExceptionType MALFORMED_EXCEPTION = new DynamicCommandExceptionType(object -> {
-		return new TranslatableText("arguments.stash.stash_filter.malformed", object);
+		return Text.translatable("arguments.stash.stash_filter.malformed", object);
 	});
 	public static final DynamicCommandExceptionType INVALID_EXCEPTION = new DynamicCommandExceptionType(object -> {
-		return new TranslatableText("arguments.stash.stash_filter.invalid", object);
+		return Text.translatable("arguments.stash.stash_filter.invalid", object);
 	});
 
 	public static StashFilterArgumentType stashFilter() {

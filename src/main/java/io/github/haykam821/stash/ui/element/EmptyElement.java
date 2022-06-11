@@ -3,7 +3,7 @@ package io.github.haykam821.stash.ui.element;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import net.minecraft.item.Items;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 public final class EmptyElement {
 	public static final GuiElement INSTANCE = EmptyElement.of();
@@ -14,7 +14,7 @@ public final class EmptyElement {
 
 	private static GuiElement of() {
 		return new GuiElementBuilder(Items.BARRIER)
-			.setName(new TranslatableText("text.stash.ui.empty"))
+			.setName(Text.translatable("text.stash.ui.empty"))
 			.addLoreLine(InfoElement.getLoreLine("text.stash.ui.empty.description"))
 			.build();
 	}

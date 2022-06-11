@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class StashUi extends LayeredGui {
 	private final ServerPlayerEntity player;
@@ -42,7 +41,7 @@ public class StashUi extends LayeredGui {
 	@Override
 	public Text getTitle() {
 		Text name = this.player == null ? InfoElement.UNKNOWN_TEXT : this.player.getDisplayName();
-		return new TranslatableText("text.stash.ui.title", name);
+		return Text.translatable("text.stash.ui.title", name);
 	}
 
 	public StashComponent getStash() {

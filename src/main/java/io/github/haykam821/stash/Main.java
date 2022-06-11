@@ -8,8 +8,8 @@ import io.github.haykam821.stash.compatibility.StashCompatibility;
 import io.github.haykam821.stash.filter.StashFilterType;
 import io.github.haykam821.stash.filter.StashFilterTypes;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.minecraft.command.argument.ArgumentTypes;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.util.Identifier;
@@ -22,7 +22,7 @@ public class Main implements ModInitializer {
 
 	// Arguments
 	private static final Identifier STASH_FILTER_ID = new Identifier(MOD_ID, "stash_filter");
-	private static final ArgumentSerializer<StashFilterArgumentType> STASH_FILTER_ARGUMENT_SERIALIZER = new ConstantArgumentSerializer<>(StashFilterArgumentType::stashFilter);
+	private static final ArgumentSerializer<StashFilterArgumentType, ?> STASH_FILTER_ARGUMENT_SERIALIZER = ConstantArgumentSerializer.of(StashFilterArgumentType::stashFilter);
 
 	// Stash filter types
 	private static final Identifier STASH_FILTER_TYPE_ID = new Identifier(MOD_ID, "stash_filter_type");
@@ -32,11 +32,11 @@ public class Main implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Arguments
-		ArgumentTypes.register(STASH_FILTER_ID.toString(), StashFilterArgumentType.class, STASH_FILTER_ARGUMENT_SERIALIZER);
+		ArgumentTypeRegistry.registerArgumentType(STASH_FILTER_ID, StashFilterArgumentType.class, STASH_FILTER_ARGUMENT_SERIALIZER);
 
 		// Commands
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-			StashCommand.register(dispatcher);
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			StashCommand.register(dispatcher, registryAccess);
 		});
 
 		StashFilterTypes.register();

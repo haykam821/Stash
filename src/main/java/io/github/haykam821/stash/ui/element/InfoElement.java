@@ -4,14 +4,11 @@ import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import io.github.haykam821.stash.ui.StashUi;
 import net.minecraft.item.Items;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 public final class InfoElement {
-	public static final Text UNKNOWN_TEXT = new LiteralText("???");
+	public static final Text UNKNOWN_TEXT = Text.literal("???");
 
 	private InfoElement() {
 		return;
@@ -26,15 +23,15 @@ public final class InfoElement {
 			.build();
 	}
 
-	protected static MutableText getToolbarName(String translationKey) {
-		return new TranslatableText(translationKey).formatted(Formatting.YELLOW);
+	protected static Text getToolbarName(String translationKey) {
+		return Text.translatable(translationKey).formatted(Formatting.YELLOW);
 	}
 
-	protected static MutableText getHelpLine(String translationKey, int ordinal, Object... args) {
+	protected static Text getHelpLine(String translationKey, int ordinal, Object... args) {
 		return getLoreLine(translationKey + ".help." + ordinal, args);
 	}
 
-	public static MutableText getLoreLine(String translationKey, Object... args) {
-		return new TranslatableText(translationKey, args).formatted(Formatting.GRAY);
+	public static Text getLoreLine(String translationKey, Object... args) {
+		return Text.translatable(translationKey, args).formatted(Formatting.GRAY);
 	}
 }

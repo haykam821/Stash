@@ -1,7 +1,7 @@
 package io.github.haykam821.stash.compatibility;
 
-import eu.pb4.placeholders.PlaceholderAPI;
-import eu.pb4.placeholders.PlaceholderResult;
+import eu.pb4.placeholders.api.PlaceholderResult;
+import eu.pb4.placeholders.api.Placeholders;
 import io.github.haykam821.stash.Main;
 import io.github.haykam821.stash.component.StashComponent;
 import io.github.haykam821.stash.component.StashComponentInitializer;
@@ -26,12 +26,12 @@ public final class StashCompatibility {
 	}
 
 	private static void registerPlaceholders() {
-		PlaceholderAPI.register(QUERY_ID, context -> {
+		Placeholders.register(QUERY_ID, (context, argument) -> {
 			if (!context.hasPlayer()) {
 				return PlaceholderResult.invalid("No player!");
 			}
 
-			Identifier id = Identifier.tryParse(context.getArgument());
+			Identifier id = Identifier.tryParse(argument);
 			if (id == null) {
 				return PlaceholderResult.invalid("Unknown item ID!");
 			}
@@ -41,7 +41,7 @@ public final class StashCompatibility {
 				return PlaceholderResult.invalid("Unknown item!");
 			}
 
-			StashComponent stash = StashComponentInitializer.STASH.get(context.getPlayer());
+			StashComponent stash = StashComponentInitializer.STASH.get(context.player());
 			int count = stash.getCount(item);
 
 			return PlaceholderResult.value("" + count);

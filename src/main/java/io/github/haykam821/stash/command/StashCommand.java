@@ -24,6 +24,7 @@ import io.github.haykam821.stash.filter.StashFilter;
 import io.github.haykam821.stash.ui.StashUi;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemPredicateArgumentType;
 import net.minecraft.command.argument.ItemSlotArgumentType;
 import net.minecraft.command.argument.ItemStackArgument;
@@ -38,12 +39,11 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class StashCommand {
-	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+	public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
 		LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal("stash");
 				
 		// List
@@ -97,7 +97,7 @@ public class StashCommand {
 				
 		// Query
 		LiteralArgumentBuilder<ServerCommandSource> queryBuilder = StashCommand.baseLiteral("query");
-		queryBuilder.then(CommandManager.argument("item", ItemStackArgumentType.itemStack()).executes(context -> {
+		queryBuilder.then(CommandManager.argument("item", ItemStackArgumentType.itemStack(registryAccess)).executes(context -> {
 			return StashCommand.query(context, ItemStackArgumentType.getItemStackArgument(context, "item").createStack(1, false));
 		}));
 		builder.then(queryBuilder);
@@ -105,7 +105,7 @@ public class StashCommand {
 		// Retrieve
 		LiteralArgumentBuilder<ServerCommandSource> retrieveBuilder = StashCommand.baseLiteral("retrieve");
 		retrieveBuilder
-			.then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
+			.then(CommandManager.argument("item", ItemStackArgumentType.itemStack(registryAccess))
 			.suggests((context, suggestionsBuilder) -> {
 				StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 				for (Object2IntMap.Entry<Item> entry : stash.getEntries()) {
@@ -132,7 +132,7 @@ public class StashCommand {
 				
 		// Set
 		LiteralArgumentBuilder<ServerCommandSource> setBuilder = StashCommand.baseLiteral("set", 4);
-		setBuilder.then(CommandManager.argument("item", ItemStackArgumentType.itemStack())
+		setBuilder.then(CommandManager.argument("item", ItemStackArgumentType.itemStack(registryAccess))
 			.then(CommandManager.argument("count", IntegerArgumentType.integer(0))
 			.executes(StashCommand::set)));
 		builder.then(setBuilder);
@@ -148,8 +148,8 @@ public class StashCommand {
 		}));
 
 		storeBuilder.then(CommandManager.literal("item")
-			.then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate()).executes(context -> {
-				return StashCommand.store(context, new PredicateStashFilter(ItemPredicateArgumentType.getItemPredicate(context, "item")));
+			.then(CommandManager.argument("item", ItemPredicateArgumentType.itemPredicate(registryAccess)).executes(context -> {
+				return StashCommand.store(context, new PredicateStashFilter(ItemPredicateArgumentType.getItemStackPredicate(context, "item")));
 			})));
 		storeBuilder.then(CommandManager.literal("slot")
 			.then(CommandManager.argument("slot", ItemSlotArgumentType.itemSlot()).executes(context -> {
@@ -193,10 +193,10 @@ public class StashCommand {
 			items += entry.getIntValue();
 
 			Text stackText = entry.getKey().getDefaultStack().toHoverableText();
-			texts.add(new TranslatableText("commands.stash.stash.list.entry", stackText, entry.getIntValue()));
+			texts.add(Text.translatable("commands.stash.stash.list.entry", stackText, entry.getIntValue()));
 		}
 
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.list.header" + (maxItems == Integer.MAX_VALUE ? "" : ".partial"), items, entries.size()), false);
+		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.list.header" + (maxItems == Integer.MAX_VALUE ? "" : ".partial"), items, entries.size()), false);
 		for (Text text : texts) {
 			context.getSource().sendFeedback(text, false);
 		}
@@ -208,7 +208,7 @@ public class StashCommand {
 		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 		int count = stash.getCount(stack.getItem());
 
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.query", count, stack.toHoverableText()), false);
+		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.query", count, stack.toHoverableText()), false);
 		return 1;
 	}
 
@@ -255,7 +255,7 @@ public class StashCommand {
 		stash.decreaseCount(item, retrievedCount);
 
 		Text stackText = itemArgument.createStack(1, false).toHoverableText();
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.retrieve", retrievedCount, stackText), false);
+		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.retrieve", retrievedCount, stackText), false);
 
 		return 1;
 	}
@@ -267,7 +267,7 @@ public class StashCommand {
 		stash.writeToNbt(nbt);
 
 		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, nbt.asString());
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.export").styled(style -> {
+		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.export").styled(style -> {
 			return style.withClickEvent(clickEvent);
 		}), false);
 
@@ -280,7 +280,7 @@ public class StashCommand {
 		NbtCompound nbt = new NbtCompound();
 		stash.writeToNbt(nbt);
 
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.export.output", NbtHelper.toPrettyPrintedText(nbt)), false);
+		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.export.output", NbtHelper.toPrettyPrintedText(nbt)), false);
 		return 1;
 	}
 
@@ -291,7 +291,7 @@ public class StashCommand {
 		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 		stash.setCount(itemArgument.getItem(), count);
 
-		context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.set", itemArgument.createStack(count, false).toHoverableText(), count), false);
+		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.set", itemArgument.createStack(count, false).toHoverableText(), count), false);
 		return 1;
 	}
 
@@ -314,9 +314,9 @@ public class StashCommand {
 		}
 
 		if (matchedStacks.size() == 1) {
-			context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.store.success.single", matchedStacks.get(0).getCount(), matchedStacks.get(0).toHoverableText()), false);
+			context.getSource().sendFeedback(Text.translatable("commands.stash.stash.store.success.single", matchedStacks.get(0).getCount(), matchedStacks.get(0).toHoverableText()), false);
 		} else {
-			context.getSource().sendFeedback(new TranslatableText("commands.stash.stash.store.success.multiple", matchedStacks.size(), matchedCount), false);
+			context.getSource().sendFeedback(Text.translatable("commands.stash.stash.store.success.multiple", matchedStacks.size(), matchedCount), false);
 		}
 		return 1;
 	}

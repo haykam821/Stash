@@ -14,7 +14,7 @@ import net.minecraft.util.registry.Registry;
 public class TagStashFilter implements StashFilter {
 	public static final Codec<TagStashFilter> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
-			TagKey.identifierCodec(Registry.ITEM_KEY).fieldOf("tag").forGetter(TagStashFilter::getTag)
+			TagKey.unprefixedCodec(Registry.ITEM_KEY).fieldOf("tag").forGetter(TagStashFilter::getTag)
 		).apply(instance, TagStashFilter::new);
 	});
 

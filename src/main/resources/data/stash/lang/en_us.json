@@ -13,6 +13,7 @@
 	"commands.stash.stash.store.success.single": "Stashed %d %s",
 	"text.stash.sort.alphabetical": "Alphabetical",
 	"text.stash.sort.count": "Count",
+	"text.stash.sort.group": "Group",
 	"text.stash.sort.rawId": "Raw ID",
 	"text.stash.sort.stacks": "Stacks",
 	"text.stash.sort.unsorted": "Unsorted",

@@ -20,6 +20,10 @@ public enum StashEntrySort implements StringIdentifiable {
 	RAW_ID("rawId", (a, b) -> {
 		return Integer.compare(Item.getRawId(a.getKey()), Item.getRawId(b.getKey()));
 	}),
+	GROUP("group", (a, b) -> {
+		int value = Integer.compare(a.getKey().getGroup().getIndex(), b.getKey().getGroup().getIndex());
+		return value == 0 ? RAW_ID.getComparator().compare(a, b) : value;
+	}),
 	COUNT("count", (a, b) -> {
 		return Integer.compare(a.getIntValue(), b.getIntValue());
 	}),

@@ -50,7 +50,7 @@ public class StashCommand {
 		LiteralArgumentBuilder<ServerCommandSource> listBuilder = StashCommand.baseLiteral("list");
 		LiteralArgumentBuilder<ServerCommandSource> reversedBuilder = CommandManager.literal("reversed");
 
-		for (StashEntrySort stashEntrySort : StashEntrySort.values()) {
+		for (StashEntrySort stashEntrySort : StashEntrySort.VALUES) {
 			// Ascending
 			listBuilder.then(CommandManager.literal(stashEntrySort.asString())
 				.executes(context -> {

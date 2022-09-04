@@ -25,12 +25,18 @@ public final class SortElement {
 
 	private static ClickCallback createCallback(StashUi ui) {
 		return (index, type, action, guiInterface) -> {
-			StashEntrySort previousSort = ui.getSort();
-			ui.cycleSort(type.isLeft ? 1 : -1);
+			if (type.shift) {
+				StashEntrySort previousSort = ui.getSort();
+				ui.cycleSort(type.isLeft ? 1 : -1);
 
-			if (ui.getSort() != previousSort) {
-				PageElement.playClickSound(ui);
+				if (ui.getSort() == previousSort) {
+					return;
+				}
+			} else {
+				ui.startSelectingSort();
 			}
+
+			PageElement.playClickSound(ui);
 		};
 	}
 }

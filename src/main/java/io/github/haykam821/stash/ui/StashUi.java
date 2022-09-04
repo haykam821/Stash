@@ -20,6 +20,8 @@ public class StashUi extends LayeredGui {
 	private final StashToolbarLayer toolbarLayer;
 
 	private StashEntrySort sort = StashEntrySort.ALPHABETICAL;
+	private boolean selectingSort = false;
+
 	private int page = 0;
 
 	public StashUi(ServerPlayerEntity player) {
@@ -56,8 +58,24 @@ public class StashUi extends LayeredGui {
 		return this.sort;
 	}
 
+	public void selectSort(StashEntrySort sort) {
+		this.sort = sort;
+
+		this.selectingSort = false;
+		this.update();
+	}
+
 	public void cycleSort(int offset) {
 		this.sort = this.sort.cycle(offset);
+		this.update();
+	}
+
+	public boolean isSelectingSort() {
+		return this.selectingSort;
+	}
+
+	public void startSelectingSort() {
+		this.selectingSort = true;
 		this.update();
 	}
 

@@ -38,6 +38,7 @@ public enum StashEntrySort implements StringIdentifiable {
 	}));
 
 	public static final StashEntrySort[] VALUES = StashEntrySort.values();
+	public static final StashEntrySort DEFAULT = StashEntrySort.ALPHABETICAL;
 
 	private final String literal;
 	private final Text name;
@@ -72,5 +73,17 @@ public enum StashEntrySort implements StringIdentifiable {
 
 	public StashEntrySort cycle(int offset) {
 		return VALUES[(this.ordinal() + offset + VALUES.length) % VALUES.length];
+	}
+
+	public static StashEntrySort byLiteral(String literal) {
+		if (literal != null) {
+			for (StashEntrySort sort : VALUES) {
+				if (literal.equals(sort.asString())) {
+					return sort;
+				}
+			}
+		}
+
+		return DEFAULT;
 	}
 }

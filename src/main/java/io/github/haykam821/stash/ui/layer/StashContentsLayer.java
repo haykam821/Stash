@@ -43,7 +43,7 @@ public class StashContentsLayer extends AbstractStashLayer {
 
 	private Iterable<Object2IntMap.Entry<Item>> getPageEntries() {
 		return this.getStash().getEntries().stream()
-			.sorted(this.ui.getSort().getComparator())
+			.sorted(this.ui.getStash().getSort().getComparator())
 			.skip(this.getSize() * this.ui.getPage())
 			.collect(Collectors.toList());
 	}

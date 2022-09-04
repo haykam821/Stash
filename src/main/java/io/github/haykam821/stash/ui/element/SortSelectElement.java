@@ -16,7 +16,7 @@ public final class SortSelectElement {
 			.setName(sort.getName())
 			.setCallback(SortSelectElement.createCallback(ui, sort));
 
-		if (sort == ui.getSort()) {
+		if (sort == ui.getStash().getSort()) {
 			builder.glow();
 		}
 

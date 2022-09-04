@@ -3,6 +3,7 @@ package io.github.haykam821.stash.component;
 import java.util.Optional;
 
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import io.github.haykam821.stash.command.StashEntrySort;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,9 +14,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class StashComponent implements AutoSyncedComponent {
+	private static final String STASH_KEY = "Stash";
+	private static final String SORT_KEY = "Sort";
+
 	private static final int MAX_COUNT = 64 * 1000;
 
 	private final Object2IntOpenHashMap<Item> stash = new Object2IntOpenHashMap<>();
+	private StashEntrySort sort = StashEntrySort.DEFAULT;
 
 	public StashComponent(PlayerEntity player) {
 		this.stash.defaultReturnValue(0);
@@ -66,11 +71,19 @@ public class StashComponent implements AutoSyncedComponent {
 		return new ItemStack(item, count);
 	}
 
+	public StashEntrySort getSort() {
+		return this.sort;
+	}
+
+	public void setSort(StashEntrySort sort) {
+		this.sort = sort;
+	}
+
 	@Override
 	public void readFromNbt(NbtCompound nbt) {
 		this.stash.clear();
 
-		NbtCompound stashNbt = nbt.getCompound("Stash");
+		NbtCompound stashNbt = nbt.getCompound(STASH_KEY);
 		for (String key : stashNbt.getKeys()) {
 			int count = stashNbt.getInt(key);
 			if (!this.shouldKeep(count)) continue;
@@ -80,6 +93,8 @@ public class StashComponent implements AutoSyncedComponent {
 				this.stash.put(itemMaybe.get(), count);
 			}
 		}
+
+		this.sort = StashEntrySort.byLiteral(nbt.getString(SORT_KEY));
 	}
 
 	@Override
@@ -90,7 +105,9 @@ public class StashComponent implements AutoSyncedComponent {
 			stashNbt.putInt(id.toString(), entry.getIntValue());
 		}
 
-		nbt.put("Stash", stashNbt);
+		nbt.put(STASH_KEY, stashNbt);
+
+		nbt.putString(SORT_KEY, this.sort.asString());
 	}
 
 	public static boolean isInsertable(ItemStack stack) {

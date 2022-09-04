@@ -17,7 +17,7 @@ public final class SortElement {
 
 		return new GuiElementBuilder(Items.COMPARATOR)
 			.setName(InfoElement.getToolbarName(translationKey))
-			.addLoreLine(InfoElement.getLoreLine(translationKey + ".current", ui.getSort().getName()))
+			.addLoreLine(InfoElement.getLoreLine(translationKey + ".current", ui.getStash().getSort().getName()))
 			.addLoreLine(InfoElement.getHelpLine(translationKey, 1))
 			.setCallback(SortElement.createCallback(ui))
 			.build();
@@ -26,10 +26,10 @@ public final class SortElement {
 	private static ClickCallback createCallback(StashUi ui) {
 		return (index, type, action, guiInterface) -> {
 			if (type.shift) {
-				StashEntrySort previousSort = ui.getSort();
+				StashEntrySort previousSort = ui.getStash().getSort();
 				ui.cycleSort(type.isLeft ? 1 : -1);
 
-				if (ui.getSort() == previousSort) {
+				if (ui.getStash().getSort() == previousSort) {
 					return;
 				}
 			} else {

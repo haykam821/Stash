@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
@@ -25,6 +26,10 @@ public enum StashEntrySort implements StringIdentifiable {
 		int value = Integer.compare(a.getKey().getGroup().getIndex(), b.getKey().getGroup().getIndex());
 		return value == 0 ? RAW_ID.getComparator().compare(a, b) : value;
 	}),
+	RARITY("rarity", Items.EMERALD, Comparator.comparing(entry -> {
+		ItemStack stack = entry.getKey().getDefaultStack();
+		return entry.getKey().getRarity(stack);
+	})),
 	COUNT("count", Items.BEETROOT_SEEDS, (a, b) -> {
 		return Integer.compare(a.getIntValue(), b.getIntValue());
 	}),

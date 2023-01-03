@@ -7,8 +7,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class ItemStashFilter implements StashFilter {
 	public static final Codec<ItemStashFilter> CODEC = RecordCodecBuilder.create(instance -> {
@@ -29,7 +29,7 @@ public class ItemStashFilter implements StashFilter {
 
 	@Override
 	public boolean matches(Collection<ItemStack> matchedStacks, ItemStack stack, PlayerEntity player, int slot) {
-		return this.item == Registry.ITEM.getId(stack.getItem());
+		return this.item == Registries.ITEM.getId(stack.getItem());
 	}
 
 	@Override

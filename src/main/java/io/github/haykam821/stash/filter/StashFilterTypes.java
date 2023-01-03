@@ -3,8 +3,8 @@ package io.github.haykam821.stash.filter;
 import com.mojang.serialization.Codec;
 
 import io.github.haykam821.stash.Main;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public enum StashFilterTypes {
 	ALWAYS("always", AlwaysStashFilter.CODEC),

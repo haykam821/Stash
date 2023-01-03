@@ -35,12 +35,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class StashCommand {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
@@ -109,7 +109,7 @@ public class StashCommand {
 			.suggests((context, suggestionsBuilder) -> {
 				StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 				for (Object2IntMap.Entry<Item> entry : stash.getEntries()) {
-					Identifier id = Registry.ITEM.getId(entry.getKey());
+					Identifier id = Registries.ITEM.getId(entry.getKey());
 					suggestionsBuilder.suggest(id.toString());
 				}
 				return suggestionsBuilder.buildFuture();

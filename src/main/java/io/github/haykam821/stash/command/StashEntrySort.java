@@ -4,26 +4,28 @@ import java.util.Comparator;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.registry.Registry;
 
 public enum StashEntrySort implements StringIdentifiable {
 	UNSORTED("unsorted", Items.BARRIER, (a, b) -> {
 		return 0;
 	}),
 	ALPHABETICAL("alphabetical", Items.OAK_SIGN, (a, b) -> {
-		String pathA = Registry.ITEM.getId(a.getKey()).getPath();
-		String pathB = Registry.ITEM.getId(b.getKey()).getPath();
+		String pathA = Registries.ITEM.getId(a.getKey()).getPath();
+		String pathB = Registries.ITEM.getId(b.getKey()).getPath();
 		return pathA.compareTo(pathB);
 	}),
 	RAW_ID("rawId", Items.PORKCHOP, (a, b) -> {
 		return Integer.compare(Item.getRawId(a.getKey()), Item.getRawId(b.getKey()));
 	}),
 	GROUP("group", Items.SLIME_BALL, (a, b) -> {
-		int value = Integer.compare(a.getKey().getGroup().getIndex(), b.getKey().getGroup().getIndex());
+		int value = Integer.compare(getItemGroupIndex(a.getKey()), getItemGroupIndex(b.getKey()));
 		return value == 0 ? RAW_ID.getComparator().compare(a, b) : value;
 	}),
 	RARITY("rarity", Items.EMERALD, Comparator.comparing(entry -> {
@@ -85,5 +87,23 @@ public enum StashEntrySort implements StringIdentifiable {
 		}
 
 		return DEFAULT;
+	}
+
+	private static int getItemGroupIndex(Item item) {
+		int index = 0;
+
+		for (ItemGroup group : ItemGroups.getGroups()) {
+			if (group.isSpecial()) continue;
+
+			for (ItemStack stack : group.getSearchTabStacks()) {
+				if (stack.isOf(item)) {
+					return index;
+				}
+
+				index += 1;
+			}
+		}
+
+		return Integer.MAX_VALUE;
 	}
 }

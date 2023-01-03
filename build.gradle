@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.12.56"
+	id "fabric-loom" version "1.0.16"
 	id "maven-publish"
 }
 
@@ -27,7 +27,6 @@ repositories {
 		name = "Sonatype"
 		url = "https://oss.sonatype.org/content/repositories/snapshots"
 	}
-	jcenter()
 }
 
 dependencies {

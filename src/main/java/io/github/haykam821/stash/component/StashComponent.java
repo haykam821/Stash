@@ -10,8 +10,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class StashComponent implements AutoSyncedComponent {
 	private static final String STASH_KEY = "Stash";
@@ -88,7 +88,7 @@ public class StashComponent implements AutoSyncedComponent {
 			int count = stashNbt.getInt(key);
 			if (!this.shouldKeep(count)) continue;
 
-			Optional<Item> itemMaybe = Registry.ITEM.getOrEmpty(Identifier.tryParse(key));
+			Optional<Item> itemMaybe = Registries.ITEM.getOrEmpty(Identifier.tryParse(key));
 			if (itemMaybe.isPresent()) {
 				this.stash.put(itemMaybe.get(), count);
 			}
@@ -101,7 +101,7 @@ public class StashComponent implements AutoSyncedComponent {
 	public void writeToNbt(NbtCompound nbt) {
 		NbtCompound stashNbt = new NbtCompound();
 		for (Object2IntMap.Entry<Item> entry : this.stash.object2IntEntrySet()) {
-			Identifier id = Registry.ITEM.getId(entry.getKey());
+			Identifier id = Registries.ITEM.getId(entry.getKey());
 			stashNbt.putInt(id.toString(), entry.getIntValue());
 		}
 

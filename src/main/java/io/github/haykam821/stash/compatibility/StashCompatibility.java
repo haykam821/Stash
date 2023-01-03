@@ -7,8 +7,8 @@ import io.github.haykam821.stash.component.StashComponent;
 import io.github.haykam821.stash.component.StashComponentInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public final class StashCompatibility {
 	private static final String PLACEHOLDER_API_MOD_ID = "placeholder-api";
@@ -36,7 +36,7 @@ public final class StashCompatibility {
 				return PlaceholderResult.invalid("Unknown item ID!");
 			}
 
-			Item item = Registry.ITEM.get(id);
+			Item item = Registries.ITEM.get(id);
 			if (item == null) {
 				return PlaceholderResult.invalid("Unknown item!");
 			}

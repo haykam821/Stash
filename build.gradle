@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "1.0.16"
+	id "fabric-loom" version "1.1.10"
 	id "maven-publish"
 }
 
@@ -56,8 +56,8 @@ dependencies {
 	include("eu.pb4:sgui:${project.sgui_version}")
 
 	// Server Translations API
-	modImplementation("fr.catcore:server-translations-api:${project.server_translations_api_version}")
-	include("fr.catcore:server-translations-api:${project.server_translations_api_version}")
+	modImplementation("xyz.nucleoid:server-translations-api:${project.server_translations_api_version}")
+	include("xyz.nucleoid:server-translations-api:${project.server_translations_api_version}")
 
 	// Permissions API
 	modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}")

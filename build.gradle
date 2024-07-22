@@ -37,12 +37,12 @@ dependencies {
 	modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Cardinal Components (Base)
-	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
-	include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
+	modImplementation("org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
+	include("org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
 
 	// Cardinal Components (Entity)
-	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
-	include("dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
+	modImplementation("org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
+	include("org.ladysnake.cardinal-components-api:cardinal-components-entity:${project.cardinal_components_version}")
 
 	// Placeholder API
 	modImplementation("eu.pb4:placeholder-api:${project.placeholder_api_version}")
@@ -71,12 +71,12 @@ processResources {
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 tasks.withType(JavaCompile) {
-	options.release = 17
+	options.release = 21
 	options.encoding = "UTF-8"
 }
 

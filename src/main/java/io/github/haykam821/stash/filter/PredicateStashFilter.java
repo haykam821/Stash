@@ -3,13 +3,13 @@ package io.github.haykam821.stash.filter;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class PredicateStashFilter implements StashFilter {
-	public static final Codec<PredicateStashFilter> CODEC = Codec.unit(() -> {
+	public static final MapCodec<PredicateStashFilter> CODEC = MapCodec.unit(() -> {
 		return new PredicateStashFilter(stack -> true);
 	});
 

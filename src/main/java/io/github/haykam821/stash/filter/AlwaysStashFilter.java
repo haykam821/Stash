@@ -2,13 +2,13 @@ package io.github.haykam821.stash.filter;
 
 import java.util.Collection;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class AlwaysStashFilter implements StashFilter {
-	public static final Codec<AlwaysStashFilter> CODEC = Codec.unit(() -> {
+	public static final MapCodec<AlwaysStashFilter> CODEC = MapCodec.unit(() -> {
 		return new AlwaysStashFilter();
 	});
 

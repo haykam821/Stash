@@ -32,6 +32,8 @@ public final class InfoElement {
 	}
 
 	public static Text getLoreLine(String translationKey, Object... args) {
-		return Text.translatable(translationKey, args).formatted(Formatting.GRAY);
+		return Text.translatable(translationKey, args).styled(style -> {
+			return style.withFormatting(Formatting.GRAY).withItalic(false);
+		});
 	}
 }

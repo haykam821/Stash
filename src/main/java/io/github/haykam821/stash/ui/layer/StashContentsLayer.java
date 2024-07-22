@@ -101,7 +101,7 @@ public class StashContentsLayer extends AbstractStashLayer {
 
 	private void completeTransaction() {
 		this.ui.update();
-		this.ui.getPlayer().playSound(SoundEvents.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.MASTER, 1, 1);
+		this.ui.getPlayer().playSoundToPlayer(SoundEvents.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.MASTER, 1, 1);
 	}
 
 	private int getExtractCount(Item item, SlotActionType action) {

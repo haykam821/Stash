@@ -1,6 +1,7 @@
 package io.github.haykam821.stash.component;
 
-import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
+
 import io.github.haykam821.stash.command.StashEntrySort;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.item.Item;

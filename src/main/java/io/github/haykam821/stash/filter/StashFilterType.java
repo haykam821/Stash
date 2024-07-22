@@ -1,15 +1,15 @@
 package io.github.haykam821.stash.filter;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 public class StashFilterType<T extends StashFilter> {
-	private final Codec<T> codec;
+	private final MapCodec<T> codec;
 
-	public StashFilterType(Codec<T> codec) {
+	public StashFilterType(MapCodec<T> codec) {
 		this.codec = codec;
 	}
 
-	public Codec<T> getCodec() {
+	public MapCodec<T> getCodec() {
 		return this.codec;
 	}
 }

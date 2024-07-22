@@ -3,14 +3,14 @@ package io.github.haykam821.stash.filter;
 import java.util.Collection;
 import java.util.List;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class OrStashFilter implements StashFilter {
-	public static final Codec<OrStashFilter> CODEC = RecordCodecBuilder.create(instance -> {
+	public static final MapCodec<OrStashFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
 			StashFilter.TYPE_CODEC.listOf().fieldOf("stash_filters").forGetter(OrStashFilter::getStashFilters)
 		).apply(instance, OrStashFilter::new);

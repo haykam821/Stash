@@ -2,34 +2,34 @@ package io.github.haykam821.stash.filter;
 
 import java.util.Collection;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.entry.RegistryEntry;
 
 public class ItemStashFilter implements StashFilter {
-	public static final Codec<ItemStashFilter> CODEC = RecordCodecBuilder.create(instance -> {
+	public static final MapCodec<ItemStashFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
-			Identifier.CODEC.fieldOf("item").forGetter(ItemStashFilter::getItem)
+			ItemStack.ITEM_CODEC.fieldOf("item").forGetter(ItemStashFilter::getItem)
 		).apply(instance, ItemStashFilter::new);
 	});
 
-	private final Identifier item;
+	private final RegistryEntry<Item> item;
 
-	public ItemStashFilter(Identifier item) {
+	public ItemStashFilter(RegistryEntry<Item> item) {
 		this.item = item;
 	}
 
-	public Identifier getItem() {
+	public RegistryEntry<Item> getItem() {
 		return this.item;
 	}
 
 	@Override
 	public boolean matches(Collection<ItemStack> matchedStacks, ItemStack stack, PlayerEntity player, int slot) {
-		return this.item == Registries.ITEM.getId(stack.getItem());
+		return stack.itemMatches(this.item);
 	}
 
 	@Override

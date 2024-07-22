@@ -1,6 +1,6 @@
 package io.github.haykam821.stash.filter;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 import io.github.haykam821.stash.Main;
 import net.minecraft.registry.Registry;
@@ -20,7 +20,7 @@ public enum StashFilterTypes {
 	
 	private final StashFilterType<?> type;
 
-	private <T extends StashFilter> StashFilterTypes(String path, Codec<T> codec) {
+	private <T extends StashFilter> StashFilterTypes(String path, MapCodec<T> codec) {
 		Identifier id = new Identifier(Main.MOD_ID, path);
 
 		StashFilterType<T> type = new StashFilterType<>(codec);

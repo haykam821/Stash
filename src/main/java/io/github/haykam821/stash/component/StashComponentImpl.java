@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 
 public class StashComponentImpl implements StashComponent {
@@ -65,7 +66,7 @@ public class StashComponentImpl implements StashComponent {
 	}
 
 	@Override
-	public void readFromNbt(NbtCompound nbt) {
+	public void readFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 		this.stash.clear();
 
 		NbtCompound stashNbt = nbt.getCompound(STASH_KEY);
@@ -83,7 +84,7 @@ public class StashComponentImpl implements StashComponent {
 	}
 
 	@Override
-	public void writeToNbt(NbtCompound nbt) {
+	public void writeToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
 		NbtCompound stashNbt = new NbtCompound();
 		for (Object2IntMap.Entry<Item> entry : this.stash.object2IntEntrySet()) {
 			Identifier id = Registries.ITEM.getId(entry.getKey());
@@ -93,5 +94,10 @@ public class StashComponentImpl implements StashComponent {
 		nbt.put(STASH_KEY, stashNbt);
 
 		nbt.putString(SORT_KEY, this.sort.asString());
+	}
+
+	@Override
+	public boolean isRequiredOnClient() {
+		return false;
 	}
 }

@@ -3,13 +3,14 @@ package io.github.haykam821.stash.filter;
 import java.util.Collection;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public class CountStashFilter implements StashFilter {
-	public static final Codec<CountStashFilter> CODEC = RecordCodecBuilder.create(instance -> {
+	public static final MapCodec<CountStashFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> {
 		return instance.group(
 			Codec.INT.optionalFieldOf("min_count", 0).forGetter(CountStashFilter::getMinCount),
 			Codec.INT.fieldOf("max_count").forGetter(CountStashFilter::getMaxCount)

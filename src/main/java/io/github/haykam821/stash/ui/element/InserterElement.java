@@ -83,6 +83,6 @@ public final class InserterElement {
 
 	private static void completeTransaction(StashUi ui) {
 		ui.update();
-		ui.getPlayer().playSound(SoundEvents.ITEM_BUNDLE_INSERT, SoundCategory.MASTER, 1, 1);
+		ui.getPlayer().playSoundToPlayer(SoundEvents.ITEM_BUNDLE_INSERT, SoundCategory.MASTER, 1, 1);
 	}
 }

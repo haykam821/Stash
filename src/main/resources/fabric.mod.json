@@ -34,6 +34,6 @@
 		"sgui": "*",
 		"server_translations_api": "*",
 		"fabric-permissions-api-v0": "*",
-		"java": ">=17"
+		"java": ">=21"
 	}
 }

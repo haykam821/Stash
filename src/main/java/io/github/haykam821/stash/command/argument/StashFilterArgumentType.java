@@ -13,15 +13,16 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DataResult.PartialResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 
 import io.github.haykam821.stash.filter.StashFilter;
+import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
-public class StashFilterArgumentType implements ArgumentType<String> {
+public class StashFilterArgumentType implements ArgumentType<StashFilter> {
 	private static final Collection<String> EXAMPLES = Arrays.asList("{\"type\": \"stash:tag\", \"tag\": \"minecraft:leaves\"}");
 
 	public static final DynamicCommandExceptionType MALFORMED_EXCEPTION = new DynamicCommandExceptionType(object -> {
@@ -31,36 +32,36 @@ public class StashFilterArgumentType implements ArgumentType<String> {
 		return Text.translatable("arguments.stash.stash_filter.invalid", object);
 	});
 
-	public static StashFilterArgumentType stashFilter() {
-		return new StashFilterArgumentType();
+	private final DynamicOps<JsonElement> ops;
+
+	public StashFilterArgumentType(CommandRegistryAccess registryAccess) {
+		this.ops = RegistryOps.of(JsonOps.INSTANCE, registryAccess);
 	}
 
-	public static StashFilter getStashFilter(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-		String string = StringArgumentType.getString(context, name);
+	public static StashFilterArgumentType stashFilter(CommandRegistryAccess registryAccess) {
+		return new StashFilterArgumentType(registryAccess);
+	}
+
+	public static StashFilter getStashFilter(CommandContext<ServerCommandSource> context, String name) {
+		return context.getArgument(name, StashFilter.class);
+	}
+
+	@Override
+	public StashFilter parse(StringReader reader) throws CommandSyntaxException {
+		String string = StringArgumentType.greedyString().parse(reader);
 		try {
 			JsonElement element = JsonParser.parseString(string);
 			if (!element.isJsonObject()) {
 				throw INVALID_EXCEPTION.create(string);
 			}
 			JsonObject object = element.getAsJsonObject();
-			
-			DataResult<StashFilter> dataResult = StashFilter.TYPE_CODEC.parse(JsonOps.INSTANCE, object);
-			if (dataResult.error().isPresent()) {
-				PartialResult<StashFilter> partial = dataResult.error().get();
-				throw INVALID_EXCEPTION.create(partial.message());
-			} else if (!dataResult.result().isPresent()) {
-				throw INVALID_EXCEPTION.create(string);
-			}
 
-			return dataResult.result().get();
+			return StashFilter.TYPE_CODEC
+				.parse(this.ops, object)
+				.getOrThrow(error -> INVALID_EXCEPTION.createWithContext(reader, error));
 		} catch (JsonParseException exception) {
-			throw MALFORMED_EXCEPTION.create(string);
+			throw MALFORMED_EXCEPTION.createWithContext(reader, string);
 		}
-	}
-
-	@Override
-	public String parse(StringReader reader) throws CommandSyntaxException {
-		return StringArgumentType.greedyString().parse(reader);
 	}
 
 	@Override

@@ -142,7 +142,7 @@ public class StashCommand {
 		// Store
 		LiteralArgumentBuilder<ServerCommandSource> storeBuilder = StashCommand.baseLiteral("store");
 
-		storeBuilder.then(CommandManager.argument("stashFilter", StashFilterArgumentType.stashFilter()).executes(context -> {
+		storeBuilder.then(CommandManager.argument("stashFilter", StashFilterArgumentType.stashFilter(registryAccess)).executes(context -> {
 			return StashCommand.store(context, StashFilterArgumentType.getStashFilter(context, "stashFilter"));
 		}));
 		storeBuilder.then(CommandManager.literal("all").executes(context -> {
@@ -280,12 +280,13 @@ public class StashCommand {
 	}
 
 	private static int export(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
+		ServerCommandSource source = context.getSource();
+		StashComponent stash = StashComponentInitializer.STASH.get(source.getPlayer());
 
 		NbtCompound nbt = new NbtCompound();
-		stash.writeToNbt(nbt);
+		stash.writeToNbt(nbt, source.getRegistryManager());
 
-		context.getSource().sendFeedback(() -> {
+		source.sendFeedback(() -> {
 			ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, nbt.asString());
 
 			return Text.translatable("commands.stash.stash.export").styled(style -> {
@@ -297,12 +298,13 @@ public class StashCommand {
 	}
 
 	private static int exportOutput(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
+		ServerCommandSource source = context.getSource();
+		StashComponent stash = StashComponentInitializer.STASH.get(source.getPlayer());
 
 		NbtCompound nbt = new NbtCompound();
-		stash.writeToNbt(nbt);
+		stash.writeToNbt(nbt, source.getRegistryManager());
 
-		context.getSource().sendFeedback(() -> {
+		source.sendFeedback(() -> {
 			Text nbtText = NbtHelper.toPrettyPrintedText(nbt);
 			return Text.translatable("commands.stash.stash.export.output", nbtText);
 		}, false);

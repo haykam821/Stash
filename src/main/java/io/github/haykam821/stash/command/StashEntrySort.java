@@ -34,7 +34,7 @@ public enum StashEntrySort implements StringIdentifiable {
 	}),
 	RARITY("rarity", Items.EMERALD, Comparator.comparing(entry -> {
 		ItemStack stack = entry.getKey().getDefaultStack();
-		return entry.getKey().getRarity(stack);
+		return stack.getRarity();
 	})),
 	COUNT("count", Items.BEETROOT_SEEDS, (a, b) -> {
 		return Integer.compare(a.getIntValue(), b.getIntValue());

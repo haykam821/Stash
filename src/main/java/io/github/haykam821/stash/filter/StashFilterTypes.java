@@ -21,7 +21,7 @@ public enum StashFilterTypes {
 	private final StashFilterType<?> type;
 
 	private <T extends StashFilter> StashFilterTypes(String path, MapCodec<T> codec) {
-		Identifier id = new Identifier(Main.MOD_ID, path);
+		Identifier id = Main.id(path);
 
 		StashFilterType<T> type = new StashFilterType<>(codec);
 		this.type = type;

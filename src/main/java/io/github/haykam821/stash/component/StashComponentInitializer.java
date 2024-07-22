@@ -10,7 +10,7 @@ import io.github.haykam821.stash.Main;
 import net.minecraft.util.Identifier;
 
 public class StashComponentInitializer implements EntityComponentInitializer {
-	private static final Identifier STASH_ID = new Identifier(Main.MOD_ID, "stash");
+	private static final Identifier STASH_ID = Main.id("stash");
 	public static final ComponentKey<StashComponent> STASH = ComponentRegistryV3.INSTANCE.getOrCreate(STASH_ID, StashComponent.class);
 
 	@Override

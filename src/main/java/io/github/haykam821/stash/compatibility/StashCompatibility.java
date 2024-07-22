@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 public final class StashCompatibility {
 	private static final String PLACEHOLDER_API_MOD_ID = "placeholder-api";
 
-	private static final Identifier QUERY_ID = new Identifier(Main.MOD_ID, "query");
+	private static final Identifier QUERY_ID = Main.id("query");
 
 	private StashCompatibility() {
 		return;

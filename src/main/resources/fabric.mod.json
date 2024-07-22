@@ -33,6 +33,7 @@
 		"cardinal-components-entity": ">=3.0.0",
 		"sgui": "*",
 		"server_translations_api": "*",
-		"fabric-permissions-api-v0": "*"
+		"fabric-permissions-api-v0": "*",
+		"java": ">=17"
 	}
 }

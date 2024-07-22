@@ -73,8 +73,7 @@ public final class InserterElement {
 	}
 
 	private static void insertOneFromCursorStack(StashUi ui) {
-		ItemStack stack = ui.getCursorStack().copy();
-		stack.setCount(1);
+		ItemStack stack = ui.getCursorStack().copyWithCount(1);
 
 		if (ui.getStash().insertStack(stack)) {
 			ui.getCursorStack().decrement(1);

@@ -1,10 +1,7 @@
 plugins {
-	id "fabric-loom" version "1.1.10"
+	id "fabric-loom" version "1.7.2"
 	id "maven-publish"
 }
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -16,16 +13,12 @@ repositories {
 		url = "https://maven.fabricmc.net/"
 	}
 	maven {
-		name = "Ladysnake Libs"
-		url = "https://ladysnake.jfrog.io/artifactory/mods"
+		name = "Ladysnake"
+		url = "https://maven.ladysnake.org/releases"
 	}
 	maven {
 		name = "Nucleoid"
 		url = "https://maven.nucleoid.xyz/"
-	}
-	maven {
-		name = "Sonatype"
-		url = "https://oss.sonatype.org/content/repositories/snapshots"
 	}
 }
 
@@ -35,10 +28,13 @@ dependencies {
 	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
 	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
 
-	// Fabric API
+	// Fabric API (direct)
 	modImplementation(fabricApi.module("fabric-api-base", project.fabric_version))
 	modImplementation(fabricApi.module("fabric-command-api-v2", project.fabric_version))
+
+	// Fabric API (helper)
 	modImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version))
+	modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
 
 	// Cardinal Components (Base)
 	modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cardinal_components_version}")
@@ -60,7 +56,9 @@ dependencies {
 	include("xyz.nucleoid:server-translations-api:${project.server_translations_api_version}")
 
 	// Permissions API
-	modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}")
+	modImplementation("me.lucko:fabric-permissions-api:${project.permissions_api_version}") {
+		transitive = false
+	}
 	include("me.lucko:fabric-permissions-api:${project.permissions_api_version}")
 }
 
@@ -72,7 +70,13 @@ processResources {
 	}
 }
 
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
 tasks.withType(JavaCompile) {
+	options.release = 17
 	options.encoding = "UTF-8"
 }
 

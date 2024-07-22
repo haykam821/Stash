@@ -203,9 +203,15 @@ public class StashCommand {
 			texts.add(Text.translatable("commands.stash.stash.list.entry", stackText, entry.getIntValue()));
 		}
 
-		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.list.header" + (maxItems == Integer.MAX_VALUE ? "" : ".partial"), items, entries.size()), false);
+		int finalItems = items;
+
+		context.getSource().sendFeedback(() -> {
+			String suffix = maxItems == Integer.MAX_VALUE ? "" : ".partial";
+			return Text.translatable("commands.stash.stash.list.header" + suffix, finalItems, entries.size());
+		}, false);
+
 		for (Text text : texts) {
-			context.getSource().sendFeedback(text, false);
+			context.getSource().sendFeedback(() -> text, false);
 		}
 
 		return 1;
@@ -215,7 +221,10 @@ public class StashCommand {
 		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 		int count = stash.getCount(stack.getItem());
 
-		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.query", count, stack.toHoverableText()), false);
+		context.getSource().sendFeedback(() -> {
+			return Text.translatable("commands.stash.stash.query", count, stack.toHoverableText());
+		}, false);
+
 		return 1;
 	}
 
@@ -261,8 +270,11 @@ public class StashCommand {
 		int retrievedCount = totalRetrievableCount - remainingCount;
 		stash.decreaseCount(item, retrievedCount);
 
-		Text stackText = itemArgument.createStack(1, false).toHoverableText();
-		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.retrieve", retrievedCount, stackText), false);
+		ItemStack displayStack = itemArgument.createStack(1, false);
+
+		context.getSource().sendFeedback(() -> {
+			return Text.translatable("commands.stash.stash.retrieve", retrievedCount, displayStack.toHoverableText());
+		}, false);
 
 		return 1;
 	}
@@ -273,10 +285,13 @@ public class StashCommand {
 		NbtCompound nbt = new NbtCompound();
 		stash.writeToNbt(nbt);
 
-		ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, nbt.asString());
-		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.export").styled(style -> {
-			return style.withClickEvent(clickEvent);
-		}), false);
+		context.getSource().sendFeedback(() -> {
+			ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, nbt.asString());
+
+			return Text.translatable("commands.stash.stash.export").styled(style -> {
+				return style.withClickEvent(clickEvent);
+			});
+		}, false);
 
 		return 1;
 	}
@@ -287,7 +302,11 @@ public class StashCommand {
 		NbtCompound nbt = new NbtCompound();
 		stash.writeToNbt(nbt);
 
-		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.export.output", NbtHelper.toPrettyPrintedText(nbt)), false);
+		context.getSource().sendFeedback(() -> {
+			Text nbtText = NbtHelper.toPrettyPrintedText(nbt);
+			return Text.translatable("commands.stash.stash.export.output", nbtText);
+		}, false);
+
 		return 1;
 	}
 
@@ -298,7 +317,12 @@ public class StashCommand {
 		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
 		stash.setCount(itemArgument.getItem(), count);
 
-		context.getSource().sendFeedback(Text.translatable("commands.stash.stash.set", itemArgument.createStack(count, false).toHoverableText(), count), false);
+		ItemStack displayStack = itemArgument.createStack(count, false);
+
+		context.getSource().sendFeedback(() -> {
+			return Text.translatable("commands.stash.stash.set", displayStack.toHoverableText(), count);
+		}, false);
+
 		return 1;
 	}
 
@@ -321,9 +345,14 @@ public class StashCommand {
 		}
 
 		if (matchedStacks.size() == 1) {
-			context.getSource().sendFeedback(Text.translatable("commands.stash.stash.store.success.single", matchedStacks.get(0).getCount(), matchedStacks.get(0).toHoverableText()), false);
+			context.getSource().sendFeedback(() -> {
+				return Text.translatable("commands.stash.stash.store.success.single", matchedStacks.get(0).getCount(), matchedStacks.get(0).toHoverableText());
+			}, false);
 		} else {
-			context.getSource().sendFeedback(Text.translatable("commands.stash.stash.store.success.multiple", matchedStacks.size(), matchedCount), false);
+			int finalMatchedCount = matchedCount;
+			context.getSource().sendFeedback(() -> {
+				return Text.translatable("commands.stash.stash.store.success.multiple", matchedStacks.size(), finalMatchedCount);
+			}, false);
 		}
 		return 1;
 	}

@@ -1,6 +1,7 @@
 package io.github.haykam821.stash.command;
 
 import java.util.Comparator;
+import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.item.Item;
@@ -9,6 +10,7 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 
@@ -27,6 +29,8 @@ public enum StashEntrySort implements StringIdentifiable {
 	GROUP("group", Items.SLIME_BALL, (a, b) -> {
 		int value = Integer.compare(getItemGroupIndex(a.getKey()), getItemGroupIndex(b.getKey()));
 		return value == 0 ? RAW_ID.getComparator().compare(a, b) : value;
+	}, player -> {
+		ItemGroups.updateDisplayContext(player.getWorld().getEnabledFeatures(), player.isCreativeLevelTwoOp(), player.getWorld().getRegistryManager());
 	}),
 	RARITY("rarity", Items.EMERALD, Comparator.comparing(entry -> {
 		ItemStack stack = entry.getKey().getDefaultStack();
@@ -47,13 +51,20 @@ public enum StashEntrySort implements StringIdentifiable {
 
 	private final Item icon;
 	private final Comparator<Object2IntMap.Entry<Item>> comparator;
+	private final Consumer<ServerPlayerEntity> initializer;
 
-	private StashEntrySort(String literal, Item icon, Comparator<Object2IntMap.Entry<Item>> comparator) {
+	private StashEntrySort(String literal, Item icon, Comparator<Object2IntMap.Entry<Item>> comparator, Consumer<ServerPlayerEntity> initializer) {
 		this.literal = literal;
 		this.name = Text.translatable("text.stash.sort." + literal);
 
 		this.icon = icon;
 		this.comparator = comparator;
+
+		this.initializer = initializer;
+	}
+
+	private StashEntrySort(String literal, Item icon, Comparator<Object2IntMap.Entry<Item>> comparator) {
+		this(literal, icon, comparator, player -> {});
 	}
 
 	@Override
@@ -71,6 +82,10 @@ public enum StashEntrySort implements StringIdentifiable {
 
 	public Comparator<Object2IntMap.Entry<Item>> getComparator() {
 		return this.comparator;
+	}
+
+	public void initialize(ServerPlayerEntity player) {
+		this.initializer.accept(player);
 	}
 
 	public StashEntrySort cycle(int offset) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -38,6 +39,7 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -54,21 +56,21 @@ public class StashCommand {
 			// Ascending
 			listBuilder.then(CommandManager.literal(stashEntrySort.asString())
 				.executes(context -> {
-					return StashCommand.list(context, stashEntrySort.getComparator(), Integer.MAX_VALUE);
+					return StashCommand.list(context, stashEntrySort, Function.identity(), Integer.MAX_VALUE);
 				})
 					.then(CommandManager.argument("maxItems", IntegerArgumentType.integer(1))
 					.executes(context -> {
-						return StashCommand.list(context, stashEntrySort.getComparator(), IntegerArgumentType.getInteger(context, "maxItems"));
+						return StashCommand.list(context, stashEntrySort, Function.identity(), IntegerArgumentType.getInteger(context, "maxItems"));
 					})));
 	
 			// Descending
 			reversedBuilder.then(CommandManager.literal(stashEntrySort.asString())
 				.executes(context -> {
-					return StashCommand.list(context, stashEntrySort.getComparator().reversed(), Integer.MAX_VALUE);
+					return StashCommand.list(context, stashEntrySort, Comparator::reversed, Integer.MAX_VALUE);
 				})
 					.then(CommandManager.argument("maxItems", IntegerArgumentType.integer(1))
 					.executes(context -> {
-						return StashCommand.list(context, stashEntrySort.getComparator().reversed(), IntegerArgumentType.getInteger(context, "maxItems"));
+						return StashCommand.list(context, stashEntrySort, Comparator::reversed, IntegerArgumentType.getInteger(context, "maxItems"));
 					})));
 		}
 
@@ -179,10 +181,15 @@ public class StashCommand {
 		dispatcher.register(builder);
 	}
 
-	private static int list(CommandContext<ServerCommandSource> context, Comparator<Object2IntMap.Entry<Item>> comparator, int maxItems) throws CommandSyntaxException {
-		StashComponent stash = StashComponentInitializer.STASH.get(context.getSource().getPlayer());
+	private static int list(CommandContext<ServerCommandSource> context, StashEntrySort stashEntrySort, Function<Comparator<Object2IntMap.Entry<Item>>, Comparator<Object2IntMap.Entry<Item>>> comparatorMapper, int maxItems) throws CommandSyntaxException {
+		ServerPlayerEntity player = context.getSource().getPlayer();
+		StashComponent stash = StashComponentInitializer.STASH.get(player);
 
+		stashEntrySort.initialize(player);
+
+		Comparator<Object2IntMap.Entry<Item>> comparator = comparatorMapper.apply(stashEntrySort.getComparator());
 		List<Object2IntMap.Entry<Item>> entries = stash.getEntries().stream().sorted(comparator).limit(maxItems).collect(Collectors.toList());
+
 		return StashCommand.list(context, entries, maxItems);
 	}
 

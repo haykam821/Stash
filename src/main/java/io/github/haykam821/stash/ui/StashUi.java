@@ -4,7 +4,6 @@ import eu.pb4.sgui.api.gui.layered.LayeredGui;
 import io.github.haykam821.stash.command.StashEntrySort;
 import io.github.haykam821.stash.component.StashComponent;
 import io.github.haykam821.stash.component.StashComponentInitializer;
-import io.github.haykam821.stash.ui.element.InfoElement;
 import io.github.haykam821.stash.ui.layer.StashContentsLayer;
 import io.github.haykam821.stash.ui.layer.StashToolbarLayer;
 import net.minecraft.item.ItemStack;
@@ -40,8 +39,7 @@ public class StashUi extends LayeredGui {
 
 	@Override
 	public Text getTitle() {
-		Text name = this.player == null ? InfoElement.UNKNOWN_TEXT : this.player.getDisplayName();
-		return Text.translatable("text.stash.ui.title", name);
+		return this.stash.getTitle();
 	}
 
 	public StashComponent getStash() {

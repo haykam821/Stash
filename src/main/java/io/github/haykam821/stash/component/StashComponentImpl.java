@@ -3,24 +3,36 @@ package io.github.haykam821.stash.component;
 import java.util.Optional;
 
 import io.github.haykam821.stash.command.StashEntrySort;
+import io.github.haykam821.stash.ui.element.InfoElement;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class StashComponentImpl implements StashComponent {
 	private static final String STASH_KEY = "Stash";
 	private static final String SORT_KEY = "Sort";
 
+	private final PlayerEntity player;
+
 	private final Object2IntOpenHashMap<Item> stash = new Object2IntOpenHashMap<>();
 	private StashEntrySort sort = StashEntrySort.DEFAULT;
 
 	public StashComponentImpl(PlayerEntity player) {
+		this.player = player;
+
 		this.stash.defaultReturnValue(0);
+	}
+
+	private void sync() {
+		StashComponentInitializer.STASH.sync(this.player);
 	}
 
 	private boolean shouldKeep(int count) {
@@ -34,10 +46,16 @@ public class StashComponentImpl implements StashComponent {
 
 	@Override
 	public int setCount(Item item, int count) {
+		int oldCount;
+
 		if (!this.shouldKeep(count)) {
-			return this.stash.removeInt(item);
+			oldCount = this.stash.removeInt(item);
+		} else {
+			oldCount = this.stash.put(item, count);
 		}
-		return this.stash.put(item, count);
+
+		this.sync();
+		return oldCount;
 	}
 
 	@Override
@@ -47,6 +65,7 @@ public class StashComponentImpl implements StashComponent {
 			this.stash.removeInt(item);
 		}
 
+		this.sync();
 		return oldCount;
 	}
 
@@ -63,6 +82,18 @@ public class StashComponentImpl implements StashComponent {
 	@Override
 	public void setSort(StashEntrySort sort) {
 		this.sort = sort;
+		this.sync();
+	}
+
+	@Override
+	public Text getTitle() {
+		Text name = this.player == null ? InfoElement.UNKNOWN_TEXT : this.player.getDisplayName();
+		return Text.translatable("text.stash.ui.title", name);
+	}
+
+	@Override
+	public boolean isPlayer(PlayerEntity player) {
+		return this.player == player;
 	}
 
 	@Override
@@ -81,6 +112,7 @@ public class StashComponentImpl implements StashComponent {
 		}
 
 		this.sort = StashEntrySort.byLiteral(nbt.getString(SORT_KEY));
+		this.sync();
 	}
 
 	@Override
@@ -94,6 +126,17 @@ public class StashComponentImpl implements StashComponent {
 		nbt.put(STASH_KEY, stashNbt);
 
 		nbt.putString(SORT_KEY, this.sort.asString());
+	}
+
+	@Override
+	public void applySyncPacket(RegistryByteBuf buf) {
+		StashComponent.super.applySyncPacket(buf);
+		StashSyncCallback.EVENT.invoker().onStashSync(this);
+	}
+
+	@Override
+	public boolean shouldSyncWith(ServerPlayerEntity player) {
+		return this.isPlayer(player);
 	}
 
 	@Override

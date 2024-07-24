@@ -22,7 +22,7 @@ import io.github.haykam821.stash.filter.PredicateStashFilter;
 import io.github.haykam821.stash.filter.SlotIndexStashFilter;
 import io.github.haykam821.stash.filter.SlotRange;
 import io.github.haykam821.stash.filter.StashFilter;
-import io.github.haykam821.stash.ui.StashUi;
+import io.github.haykam821.stash.network.StashNetworking;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
@@ -360,9 +360,7 @@ public class StashCommand {
 	}
 
 	private static int show(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		StashUi ui = new StashUi(context.getSource().getPlayer());
-		ui.open();
-
+		StashNetworking.openScreen(context.getSource().getPlayer());
 		return 1;
 	}
 

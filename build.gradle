@@ -20,6 +20,23 @@ repositories {
 		name = "Nucleoid"
 		url = "https://maven.nucleoid.xyz/"
 	}
+	maven {
+		name = "CottonMC"
+		url = "https://server.bbkr.space/artifactory/libs-release"
+	}
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/stash.accesswidener")
+
+	splitEnvironmentSourceSets()
+
+	mods {
+		stash {
+			sourceSet(sourceSets.main)
+			sourceSet(sourceSets.client)
+		}
+	}
 }
 
 dependencies {
@@ -46,6 +63,10 @@ dependencies {
 
 	// Placeholder API
 	modImplementation("eu.pb4:placeholder-api:${project.placeholder_api_version}")
+
+	// LibGui
+	modClientImplementation("io.github.cottonmc:LibGui:${project.libgui_version}")
+	include("io.github.cottonmc:LibGui:${project.libgui_version}")
 
 	// SGUI
 	modImplementation("eu.pb4:sgui:${project.sgui_version}")

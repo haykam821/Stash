@@ -4,8 +4,10 @@ import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 
 import io.github.haykam821.stash.command.StashEntrySort;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 /**
  * A component that represents a stash, which is a map of items to counts.
@@ -86,6 +88,17 @@ public interface StashComponent extends AutoSyncedComponent {
 	 * @param sort the new sort
 	 */
 	public void setSort(StashEntrySort sort);
+
+	/**
+	 * {@return title text that describes this stash}
+	 */
+	public Text getTitle();
+
+	/**
+	 * {@return whether this stash is associated with the given player}
+	 * @param player the player to check
+	 */
+	public boolean isPlayer(PlayerEntity player);
 
 	/**
 	 * {@return whether a given stack can potentially be inserted into a stash}

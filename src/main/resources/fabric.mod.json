@@ -15,10 +15,14 @@
 		"main": [
 			"io.github.haykam821.stash.Main"
 		],
+		"client": [
+			"io.github.haykam821.stash.client.ClientMain"
+		],
         "cardinal-components-entity": [
             "io.github.haykam821.stash.component.StashComponentInitializer"
         ]
 	},
+	"accessWidener": "stash.accesswidener",
 	"custom": {
 		"cardinal-components": [
 			"stash:stash"
@@ -35,5 +39,9 @@
 		"server_translations_api": "*",
 		"fabric-permissions-api-v0": "*",
 		"java": ">=21"
+	},
+	"suggests": {
+		"libgui": "*",
+		"placeholder-api": "*"
 	}
 }

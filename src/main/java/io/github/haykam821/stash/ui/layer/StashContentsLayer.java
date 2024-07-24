@@ -6,9 +6,9 @@ import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.elements.GuiElementInterface.ClickCallback;
 import io.github.haykam821.stash.command.StashEntrySort;
+import io.github.haykam821.stash.ui.EntryStackHelper;
 import io.github.haykam821.stash.ui.StashUi;
 import io.github.haykam821.stash.ui.element.EmptyElement;
-import io.github.haykam821.stash.ui.element.InfoElement;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,10 +33,6 @@ public class StashContentsLayer extends AbstractStashLayer {
 
 		int slot = 0;
 		for (Object2IntMap.Entry<Item> entry : this.getPageEntries()) {
-			if (slot >= this.getSize()) {
-				break;
-			}
-
 			this.setSlot(slot, this.createElement(entry));
 			slot += 1;
 		}
@@ -49,33 +45,16 @@ public class StashContentsLayer extends AbstractStashLayer {
 		return this.getStash().getEntries().stream()
 			.sorted(sort.getComparator())
 			.skip(this.getSize() * this.ui.getPage())
+			.limit(this.getSize())
 			.collect(Collectors.toList());
 	}
 
 	private GuiElement createElement(Object2IntMap.Entry<Item> entry) {
+		ItemStack stack = EntryStackHelper.createEntryStack(entry);
 		Item item = entry.getKey();
 
-		int count = entry.getIntValue();
-		int maxCount = item.getMaxCount();
-
-		GuiElementBuilder builder = new GuiElementBuilder(item)
-			.setCount(MathHelper.clamp(count, 0, maxCount))
-			.setCallback(createCallback(entry.getKey()));
-
-		if (count > maxCount) {
-			builder.addLoreLine(InfoElement.getLoreLine("text.stash.ui.entry.count", count));
-
-			if (maxCount > 1) {
-				int stacks = count / maxCount;
-				int remainder = count % maxCount;
-
-				builder.addLoreLine(InfoElement.getLoreLine("text.stash.ui.entry.stacks", stacks, remainder));
-			}
-		}
-
-		if (count > maxCount) {
-			builder.glow();
-		}
+		GuiElementBuilder builder = new GuiElementBuilder(stack)
+			.setCallback(createCallback(item));
 
 		return builder.build();
 	}

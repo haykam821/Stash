@@ -2,58 +2,70 @@ package io.github.haykam821.stash.command;
 
 import java.util.Comparator;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 
+import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.function.ValueLists;
 
 public enum StashEntrySort implements StringIdentifiable {
-	UNSORTED("unsorted", Items.BARRIER, (a, b) -> {
+	UNSORTED(0, "unsorted", Items.BARRIER, (a, b) -> {
 		return 0;
 	}),
-	ALPHABETICAL("alphabetical", Items.OAK_SIGN, (a, b) -> {
+	ALPHABETICAL(1, "alphabetical", Items.OAK_SIGN, (a, b) -> {
 		String pathA = Registries.ITEM.getId(a.getKey()).getPath();
 		String pathB = Registries.ITEM.getId(b.getKey()).getPath();
 		return pathA.compareTo(pathB);
 	}),
-	RAW_ID("rawId", Items.PORKCHOP, (a, b) -> {
+	RAW_ID(2, "rawId", Items.PORKCHOP, (a, b) -> {
 		return Integer.compare(Item.getRawId(a.getKey()), Item.getRawId(b.getKey()));
 	}),
-	GROUP("group", Items.SLIME_BALL, (a, b) -> {
+	GROUP(3, "group", Items.SLIME_BALL, (a, b) -> {
 		int value = Integer.compare(getItemGroupIndex(a.getKey()), getItemGroupIndex(b.getKey()));
 		return value == 0 ? RAW_ID.getComparator().compare(a, b) : value;
 	}, player -> {
 		ItemGroups.updateDisplayContext(player.getWorld().getEnabledFeatures(), player.isCreativeLevelTwoOp(), player.getWorld().getRegistryManager());
 	}),
-	RARITY("rarity", Items.EMERALD, Comparator.comparing(entry -> {
+	RARITY(4, "rarity", Items.EMERALD, Comparator.comparing(entry -> {
 		ItemStack stack = entry.getKey().getDefaultStack();
 		return stack.getRarity();
 	})),
-	COUNT("count", Items.BEETROOT_SEEDS, (a, b) -> {
+	COUNT(5, "count", Items.BEETROOT_SEEDS, (a, b) -> {
 		return Integer.compare(a.getIntValue(), b.getIntValue());
 	}),
-	STACKS("stacks", Items.NETHERITE_SCRAP, Comparator.comparingDouble(entry -> {
+	STACKS(6, "stacks", Items.NETHERITE_SCRAP, Comparator.comparingDouble(entry -> {
 		return entry.getIntValue() / (double) entry.getKey().getMaxCount();
 	}));
 
 	public static final StashEntrySort[] VALUES = StashEntrySort.values();
 	public static final StashEntrySort DEFAULT = StashEntrySort.ALPHABETICAL;
 
+	public static final IntFunction<StashEntrySort> ID_TO_VALUE = ValueLists.createIdToValueFunction(value -> value.index, VALUES, DEFAULT);
+	public static final PacketCodec<ByteBuf, StashEntrySort> PACKET_CODEC = PacketCodecs.indexed(ID_TO_VALUE, value -> value.index);
+
+	private final int index;
+
 	private final String literal;
 	private final Text name;
 
 	private final Item icon;
 	private final Comparator<Object2IntMap.Entry<Item>> comparator;
-	private final Consumer<ServerPlayerEntity> initializer;
+	private final Consumer<PlayerEntity> initializer;
 
-	private StashEntrySort(String literal, Item icon, Comparator<Object2IntMap.Entry<Item>> comparator, Consumer<ServerPlayerEntity> initializer) {
+	private StashEntrySort(int index, String literal, Item icon, Comparator<Object2IntMap.Entry<Item>> comparator, Consumer<PlayerEntity> initializer) {
+		this.index = index;
+
 		this.literal = literal;
 		this.name = Text.translatable("text.stash.sort." + literal);
 
@@ -63,8 +75,8 @@ public enum StashEntrySort implements StringIdentifiable {
 		this.initializer = initializer;
 	}
 
-	private StashEntrySort(String literal, Item icon, Comparator<Object2IntMap.Entry<Item>> comparator) {
-		this(literal, icon, comparator, player -> {});
+	private StashEntrySort(int index, String literal, Item icon, Comparator<Object2IntMap.Entry<Item>> comparator) {
+		this(index, literal, icon, comparator, player -> {});
 	}
 
 	@Override
@@ -84,7 +96,7 @@ public enum StashEntrySort implements StringIdentifiable {
 		return this.comparator;
 	}
 
-	public void initialize(ServerPlayerEntity player) {
+	public void initialize(PlayerEntity player) {
 		this.initializer.accept(player);
 	}
 

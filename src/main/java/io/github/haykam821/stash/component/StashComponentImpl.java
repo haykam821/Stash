@@ -2,7 +2,8 @@ package io.github.haykam821.stash.component;
 
 import java.util.Optional;
 
-import io.github.haykam821.stash.command.StashEntrySort;
+import io.github.haykam821.stash.sort.StashEntrySort;
+import io.github.haykam821.stash.sort.StashEntrySorts;
 import io.github.haykam821.stash.ui.element.InfoElement;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -23,7 +24,7 @@ public class StashComponentImpl implements StashComponent {
 	private final PlayerEntity player;
 
 	private final Object2IntOpenHashMap<Item> stash = new Object2IntOpenHashMap<>();
-	private StashEntrySort sort = StashEntrySort.DEFAULT;
+	private StashEntrySort sort = StashEntrySorts.DEFAULT;
 
 	public StashComponentImpl(PlayerEntity player) {
 		this.player = player;
@@ -111,7 +112,7 @@ public class StashComponentImpl implements StashComponent {
 			}
 		}
 
-		this.sort = StashEntrySort.byLiteral(nbt.getString(SORT_KEY));
+		this.sort = StashEntrySorts.byLiteral(nbt.getString(SORT_KEY));
 		this.sync();
 	}
 

@@ -3,7 +3,7 @@ package io.github.haykam821.stash.ui.element;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.elements.GuiElementInterface.ClickCallback;
-import io.github.haykam821.stash.command.StashEntrySort;
+import io.github.haykam821.stash.sort.StashEntrySort;
 import io.github.haykam821.stash.ui.StashUi;
 
 public final class SortSelectElement {

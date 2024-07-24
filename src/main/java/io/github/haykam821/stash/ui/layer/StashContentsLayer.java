@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import eu.pb4.sgui.api.elements.GuiElement;
 import eu.pb4.sgui.api.elements.GuiElementBuilder;
 import eu.pb4.sgui.api.elements.GuiElementInterface.ClickCallback;
-import io.github.haykam821.stash.command.StashEntrySort;
+import io.github.haykam821.stash.sort.StashEntrySort;
 import io.github.haykam821.stash.ui.EntryStackHelper;
 import io.github.haykam821.stash.ui.StashUi;
 import io.github.haykam821.stash.ui.element.EmptyElement;
@@ -40,10 +40,9 @@ public class StashContentsLayer extends AbstractStashLayer {
 
 	private Iterable<Object2IntMap.Entry<Item>> getPageEntries() {
 		StashEntrySort sort = this.ui.getStash().getSort();
-		sort.initialize(this.ui.getPlayer());
 
 		return this.getStash().getEntries().stream()
-			.sorted(sort.getComparator())
+			.sorted(sort.getComparator(this.ui.getPlayer()))
 			.skip(this.getSize() * this.ui.getPage())
 			.limit(this.getSize())
 			.collect(Collectors.toList());

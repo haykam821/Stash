@@ -1,13 +1,13 @@
 package io.github.haykam821.stash.network.packet;
 
 import io.github.haykam821.stash.Main;
-import io.github.haykam821.stash.command.StashEntrySort;
-import io.netty.buffer.ByteBuf;
+import io.github.haykam821.stash.sort.StashEntrySort;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 
 public record SetStashSortC2SPayload(StashEntrySort sort) implements CustomPayload {
-	public static final PacketCodec<ByteBuf, SetStashSortC2SPayload> CODEC = PacketCodec.tuple(
+	public static final PacketCodec<RegistryByteBuf, SetStashSortC2SPayload> CODEC = PacketCodec.tuple(
 		StashEntrySort.PACKET_CODEC, SetStashSortC2SPayload::sort,
 		SetStashSortC2SPayload::new
 	);

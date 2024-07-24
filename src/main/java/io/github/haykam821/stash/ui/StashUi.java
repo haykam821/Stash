@@ -1,9 +1,9 @@
 package io.github.haykam821.stash.ui;
 
 import eu.pb4.sgui.api.gui.layered.LayeredGui;
-import io.github.haykam821.stash.command.StashEntrySort;
 import io.github.haykam821.stash.component.StashComponent;
 import io.github.haykam821.stash.component.StashComponentInitializer;
+import io.github.haykam821.stash.sort.StashEntrySort;
 import io.github.haykam821.stash.ui.layer.StashContentsLayer;
 import io.github.haykam821.stash.ui.layer.StashToolbarLayer;
 import net.minecraft.item.ItemStack;

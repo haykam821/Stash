@@ -23,6 +23,8 @@ import io.github.haykam821.stash.filter.SlotIndexStashFilter;
 import io.github.haykam821.stash.filter.SlotRange;
 import io.github.haykam821.stash.filter.StashFilter;
 import io.github.haykam821.stash.network.StashNetworking;
+import io.github.haykam821.stash.sort.StashEntrySort;
+import io.github.haykam821.stash.sort.StashEntrySorts;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandRegistryAccess;
@@ -52,7 +54,7 @@ public class StashCommand {
 		LiteralArgumentBuilder<ServerCommandSource> listBuilder = StashCommand.baseLiteral("list");
 		LiteralArgumentBuilder<ServerCommandSource> reversedBuilder = CommandManager.literal("reversed");
 
-		for (StashEntrySort stashEntrySort : StashEntrySort.VALUES) {
+		for (StashEntrySort stashEntrySort : StashEntrySorts.REGISTRY) {
 			// Ascending
 			listBuilder.then(CommandManager.literal(stashEntrySort.asString())
 				.executes(context -> {
@@ -185,9 +187,7 @@ public class StashCommand {
 		ServerPlayerEntity player = context.getSource().getPlayer();
 		StashComponent stash = StashComponentInitializer.STASH.get(player);
 
-		stashEntrySort.initialize(player);
-
-		Comparator<Object2IntMap.Entry<Item>> comparator = comparatorMapper.apply(stashEntrySort.getComparator());
+		Comparator<Object2IntMap.Entry<Item>> comparator = comparatorMapper.apply(stashEntrySort.getComparator(player));
 		List<Object2IntMap.Entry<Item>> entries = stash.getEntries().stream().sorted(comparator).limit(maxItems).collect(Collectors.toList());
 
 		return StashCommand.list(context, entries, maxItems);

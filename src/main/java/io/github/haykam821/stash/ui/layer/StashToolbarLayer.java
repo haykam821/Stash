@@ -1,7 +1,8 @@
 package io.github.haykam821.stash.ui.layer;
 
 import eu.pb4.sgui.api.elements.GuiElement;
-import io.github.haykam821.stash.command.StashEntrySort;
+import io.github.haykam821.stash.sort.StashEntrySort;
+import io.github.haykam821.stash.sort.StashEntrySorts;
 import io.github.haykam821.stash.ui.StashUi;
 import io.github.haykam821.stash.ui.element.BackgroundElement;
 import io.github.haykam821.stash.ui.element.InfoElement;
@@ -55,7 +56,7 @@ public class StashToolbarLayer extends AbstractStashLayer {
 	}
 
 	private void updateForSelectingSort(int size) {
-		int sorts = StashEntrySort.VALUES.length;
+		int sorts = StashEntrySorts.REGISTRY.size();
 		int offset = (int) (Math.max(size, sorts) / 2d - Math.min(size, sorts) / 2d);
 
 		for (int slot = 0; slot < size; slot += 1) {
@@ -63,7 +64,7 @@ public class StashToolbarLayer extends AbstractStashLayer {
 				break;
 			}
 
-			StashEntrySort sort = StashEntrySort.VALUES[slot];
+			StashEntrySort sort = StashEntrySorts.REGISTRY.getOrThrow(slot);
 			this.setSlot(slot + offset, SortSelectElement.of(ui, sort));
 		}
 	}

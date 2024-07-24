@@ -8,6 +8,7 @@ import io.github.haykam821.stash.compatibility.StashCompatibility;
 import io.github.haykam821.stash.filter.StashFilterType;
 import io.github.haykam821.stash.filter.StashFilterTypes;
 import io.github.haykam821.stash.network.StashNetworking;
+import io.github.haykam821.stash.sort.StashEntrySorts;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -41,6 +42,7 @@ public class Main implements ModInitializer {
 		});
 
 		StashFilterTypes.register();
+		StashEntrySorts.register();
 
 		StashNetworking.register();
 

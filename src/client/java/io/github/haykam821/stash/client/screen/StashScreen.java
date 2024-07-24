@@ -13,9 +13,9 @@ import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.haykam821.stash.client.StashKeyBindings;
 import io.github.haykam821.stash.client.screen.slot.SlotHelper;
 import io.github.haykam821.stash.client.screen.slot.StashSlot;
-import io.github.haykam821.stash.command.StashEntrySort;
 import io.github.haykam821.stash.component.StashComponent;
 import io.github.haykam821.stash.network.packet.SetStashSortC2SPayload;
+import io.github.haykam821.stash.sort.StashEntrySort;
 import io.github.haykam821.stash.ui.EntryStackHelper;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -64,10 +64,9 @@ public class StashScreen extends AbstractInventoryScreen<StashScreenHandler> {
 
 	public void updateStashInventory() {
 		StashEntrySort sort = this.stash.getSort();
-		sort.initialize(this.player);
 
 		List<Object2IntMap.Entry<Item>> entries = this.stash.getEntries().stream()
-			.sorted(sort.getComparator())
+			.sorted(sort.getComparator(this.player))
 			.skip(this.getRow() * ROW_SIZE)
 			.limit(this.stashInventory.size())
 			.collect(Collectors.toList());
